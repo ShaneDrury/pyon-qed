@@ -1,5 +1,6 @@
 import logging
 from pyon import Simulation, register, registered_models, registered_views
+from pyon.lib.fitting import ScipyFitter
 from pyon.lib.meson import PseudoscalarChargedMeson
 from qed.lib.fitting import MinuitFitter
 
