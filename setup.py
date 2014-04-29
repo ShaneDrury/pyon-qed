@@ -9,5 +9,5 @@ setup(
     author='srd1g10',
     author_email='',
     description='',
-    install_requires=['pyminuit', 'jinja2'],
+    install_requires=['pyminuit', 'jinja2', 'pyon'],
 )
