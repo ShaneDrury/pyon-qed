@@ -42,4 +42,9 @@ class MySim(Simulation):
         return action(self.charged_hadrons, self.uncharged_hadrons,
                       self.simulation_params, self.simulation_params)
 
+    def get_plots(self):
+        return None
+
+
+
 
