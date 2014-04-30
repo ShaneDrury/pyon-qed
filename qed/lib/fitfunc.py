@@ -9,7 +9,9 @@ def make_chi_sq(data, errors, fit_range):
     """
 
     def chi_sq(m, c):
-        return sum([(data[t] - pp_flat(t, m, c))**2 / (errors[t])**2
-                            for t in fit_range]) / len(fit_range)
+        ff = pp_flat(fit_range, m, c)
+        return sum((data - ff)**2 / errors**2) / len(fit_range)
+        # return sum([(data[t] - pp_flat(t, m, c))**2 / (errors[t])**2
+        #                     for t in fit_range]) / len(fit_range)
 
     return chi_sq

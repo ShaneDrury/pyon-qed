@@ -27,6 +27,9 @@ def populate_db(*args):
 
 
 def create_report(result_path):
+    """
+    Broken for the minute...
+    """
     env = Environment(loader=PackageLoader('qed', 'templates'))
     template = env.get_template('qed/index.html')
     logging.basicConfig(level=logging.DEBUG)
@@ -45,7 +48,7 @@ def create_report(result_path):
 command_dict = {
     'start': start_runner,
     'populatedb': populate_db,
-    'createreport': create_report,
+    #'createreport': create_report,
 }
 
 if __name__ == '__main__':

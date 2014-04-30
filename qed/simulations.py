@@ -3,7 +3,7 @@ from pyon import Simulation, register, registered_models, registered_views
 from pyon.lib.fitting import ScipyFitter
 from pyon.lib.meson import PseudoscalarChargedMeson
 from qed.lib.fitting import MinuitFitter
-
+import numpy as np
 
 @register.simulation('mu0.0042')
 class MySim(Simulation):
@@ -30,7 +30,7 @@ class MySim(Simulation):
             self.uncharged_hadrons[k] = had
 
         bnds = ((0., 1.), (0, None))
-        self.simulation_params = dict(fit_range=range(7, 25+1),
+        self.simulation_params = dict(fit_range=np.array(range(7, 25+1)),
                                       initial_value=dict(m=0.18, c=1.39432),
                                       #initial_value=[0.18, 1.39432],
                                       covariant=False,
