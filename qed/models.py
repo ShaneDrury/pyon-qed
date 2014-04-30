@@ -22,12 +22,22 @@ class AllDelMSq(Model):
                         hadron1_kwargs,
                         hadron2_kwargs):
         all_fit_params = {}
+        already_fit = {}
         for k, ch in charged_hadrons.items():
             m, q = k
             unch = uncharged_hadrons[m]
 
-            fp1 = self.fit_hadron(ch, **hadron1_kwargs)
-            fp2 = self.fit_hadron(unch, **hadron2_kwargs)
+            if k not in already_fit:
+                fp1 = self.fit_hadron(ch, **hadron1_kwargs)
+                already_fit[k] = fp1
+            else:
+                fp1 = already_fit[k]
+
+            if m not in already_fit:
+                fp2 = self.fit_hadron(unch, **hadron2_kwargs)
+                already_fit[m] = fp2
+            else:
+                fp2 = already_fit[m]
 
             central_m1 = fp1.average_params['m']
             central_m2 = fp2.average_params['m']

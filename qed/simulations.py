@@ -44,7 +44,3 @@ class MySim(Simulation):
 
     def get_plots(self):
         return None
-
-
-
-

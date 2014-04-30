@@ -1,20 +1,36 @@
 <!DOCTYPE html>
 {% block before_html %}
 {% endblock %}
-<html>
+<html lang="en">
 {% block before_head %}
 {% endblock %}
 <head>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-{% block bootstyle %}<link rel="stylesheet" href="http://bootswatch.com/cosmo/bootstrap.min.css">{% endblock %}
-<link rel="stylesheet" href="http://bootswatch.com/assets/css/bootswatch.min.css">
-<title>{% block title %}{% endblock %}</title>
-{% block extra_head %}
-{% endblock %}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    {% block bootstyle %}<link rel="stylesheet" href="http://bootswatch.com/cosmo/bootstrap.min.css">{% endblock %}
+    <link rel="stylesheet" href="http://bootswatch.com/assets/css/bootswatch.min.css">
+    <title>{% block title %}{% endblock %}</title>
+    {% block extra_head %}
+    {% endblock %}
 </head>
-
 <body>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand">Pyon Report: {{ title }}</a>
+        </div>
+{#        <div class="navbar-collapse collapse navbar-responsive-collapse">#}
+{#            <ul class="nav navbar-nav">#}
+{#            </ul>#}
+{#        </div><!-- /.nav-collapse -->#}
+    </div>
+</div>
+<p class="text-right">{{ sim_date }}<p>
 {% block body %}
 {% endblock %}
 </body>

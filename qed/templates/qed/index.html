@@ -1,8 +1,31 @@
 {% extends 'qed/base.html' %}
 {% block title %}{{ title }}{% endblock %}
 {% block body %}
-    {% for key, value in sim_results.items() %}
-        {{ key }}
-        {{ value }}
-    {% endfor %}
+    <br>
+    <div class="container">
+        {% for key, value in sim_results.items() %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ key }}</h3>
+                </div>
+                <div class="panel-body">
+                    Mass-squared difference: {{ value['average_params'] }} ({{ value['errs'] }})
+                    <br>
+                    <button type="button" class="btn btn-sm btn-default" data-toggle="collapse" data-target="#resampled-{{ value['hash'] }}">
+                        <span class="glyphicon glyphicon-list-alt"></span> &nbsp; Samples
+                    </button>
+                    <div id="resampled-{{ value['hash'] }}" class="collapse">
+                    <ul class="list-inline">
+                        {% for el in value['resampled_params'] %}
+                            <li>{{ el }}</li>
+                        {% endfor %}
+                    </ul>
+                    </div>
+                </div>
+            </div>
+            <br>
+        {% endfor %}
+    </div>
+
+
 {% endblock %}
