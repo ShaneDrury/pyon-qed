@@ -11,7 +11,12 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-10">
-                            Mass-squared difference: {{ value['average_params'] }} ({{ value['errs'] }})
+                            Number of samples: {{value['resampled_params']|length}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            Mass-squared difference: <code>{{ value['average_params'] }} ({{ value['errs'] }})</code>
                         </div>
                         <div class="col-md-2">
                             <button type="button" class="btn btn-sm btn-default" data-toggle="collapse" data-target="#resampled-{{ value['hash'] }}">
@@ -22,11 +27,7 @@
                     <div class="row">
                         <div class="col-md-10">
                             <div id="resampled-{{ value['hash'] }}" class="collapse">
-                                <ul class="list-inline">
-                                    {% for el in value['resampled_params'] %}
-                                        <li>{{ el }}</li>
-                                    {% endfor %}
-                                </ul>
+                                <pre style="word-break: normal; word-wrap: normal; white-space:pre-wrap;">{% for el in value['resampled_params'] %}{{'%0.20f'| format(el|float)}} {% endfor %}</pre>
                             </div>
                         </div>
                     </div>
@@ -35,6 +36,4 @@
             <br>
         {% endfor %}
     </div>
-
-
 {% endblock %}
