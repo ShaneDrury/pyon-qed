@@ -1,26 +1,24 @@
 import os
 import unittest
-from pyon.runner import register
-from pyon.runner.register import registered_sources
+from pyon.lib.io.parsers import Iwasaki32c
 from pyon.runner.sources import FileSource
 
-# def my_source():
+
+# def my_source():  # can use this
 #     folder = os.path.join('testfiles', 'correlators', 'f1')
-#     data_format = 'iwasaki_32c'
-#     parser = registered_parsers[data_format]()
+#     parser = Iwasaki32c()
 #     raw_data = parser.get_from_folder(folder)
 #     return QuerySet(raw_data)
 
 
-@register.source('my_source')
-class MySource(FileSource):
-    folder = os.path.join('testfiles', 'correlators', 'f1')
-    data_format = 'iwasaki_32c'
+class MySource(FileSource):  # easier?
+    folder = os.path.join('../testfiles', 'correlators', 'f1')
+    parser = Iwasaki32c()
 
 
 class TestSource(unittest.TestCase):
     def setUp(self):
-        self.my_source = registered_sources['my_source']()
+        self.my_source = MySource()
 
     def test_create_source(self):
         self.assertTrue(self.my_source)

@@ -1,31 +1,36 @@
-import unittest
-from pyon.lib.fitting import fit_hadron
-from pyon.runner import register
-from pyon.runner.models import Model
-from pyon.runner.register import registered_models, registered_views
+# from django.conf import settings
+# settings.configure()
+
+"""
+Run tests with `python djangomanage.py test`
+"""
+
+from django.test import TestCase
+from qed.models import Iwasaki32cChargedMeson, TimeSlice
 
 
-@register.model('my_model')
-class MyModel(Model):
-    def __init__(self):
+class ModelTests(TestCase):
+    def setUp(self):
+        self.mes = Iwasaki32cChargedMeson
+        self.data = [1., 2., 3.]
+        im_data = [0., 0., 0.]
+        t_range = range(len(self.data))
+        mes = Iwasaki32cChargedMeson(source='GAM_5',
+                                     sink='GAM_5',
+                                     mass_1=0.03,
+                                     mass_2=0.03,
+                                     charge_1=-1,
+                                     charge_2=1,
+                                     config_number=1000)
+        mes.save()
+        for t, re, im in zip(t_range, self.data, im_data):
+            time_slice = TimeSlice(t=t, re=re, im=im)
+            mes.data.add(time_slice)
+
+    def tearDown(self):
         pass
 
-    @staticmethod
-    def fit_hadron(hadron, **kwargs):
-        return fit_hadron(hadron, **kwargs)
-
-    def main(self):
-        """
-        Returns the function
-        """
-        return self.fit_hadron
-
-
-class TestModel(unittest.TestCase):
-    def setUp(self):
-        self.my_view = registered_views['my_view']()
-        self.my_model = registered_models['my_model']()
-
-    def test_create_model(self):
-        self.assertTrue(self.my_model)
-
+    def test_model_get_record(self):
+        mes = self.mes.objects.all()[0]
+        dat = mes.data.all()[0]
+        self.assertTrue(dat.re, self.data[0])

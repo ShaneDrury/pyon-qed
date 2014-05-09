@@ -1,12 +1,15 @@
 import os
-from unittest import skip
 from django.test import TestCase
+from pyon.lib.fitting import fit_hadron
 from pyon.lib.io import parsers
+from pyon.lib.meson import PseudoscalarChargedMeson
+from qed.lib.fitting import MinuitFitter
 from qed.models import Iwasaki32cChargedMeson, TimeSlice
+import numpy as np
 
 
-def parse_from_folder(folder, parser):
-    all_data = parser.get_from_folder(folder)
+def parse_from_folder(folder):
+    all_data = parsers.Iwasaki32cCharged().get_from_folder(folder)
     for d in all_data:
         re_dat = d.pop('data')
         im_dat = d.pop('im_data')
@@ -26,13 +29,23 @@ def my_view():
     return qs
 
 
-class ViewTests(TestCase):
+class HadronTests(TestCase):
     def setUp(self):
         self.mes = Iwasaki32cChargedMeson
-    @skip('slow')
-    def test_filter(self):
+
+    def test_make_hadron(self):
         parse_from_folder(os.path.join(
-            'qed', 'test', 'testfiles', 'correlators', 'f1'),
-            parsers.Iwasaki32cCharged())
+            'qed', 'test', 'testfiles', 'correlators', 'f1'))
         qs = my_view()
-        self.assertEqual(len(qs), 131)
+        mes = PseudoscalarChargedMeson.from_queryset(qs)
+        mes.sort()
+        mes.fold()
+        mes.scale()
+        bnds = ((0., 1.), (0, None))
+        fit_kwargs = dict(fit_range=np.array(range(7, 25+1)),
+                          initial_value=dict(m=0.3212, c=1.65),
+                          covariant=False,
+                          bounds=bnds)
+        fp = fit_hadron(mes, method=MinuitFitter, **fit_kwargs)
+        ave_m = fp.average_params['m']
+        self.assertAlmostEqual(ave_m, 0.3211, places=4)

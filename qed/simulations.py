@@ -1,16 +1,17 @@
 import logging
-from pyon import Simulation, register, registered_models, registered_views
-from pyon.lib.fitting import ScipyFitter
+from pyon.runner.simulations import Simulation
 from pyon.lib.meson import PseudoscalarChargedMeson
 from qed.lib.fitting import MinuitFitter
 import numpy as np
+#from qed.models import AllDelMSq
+#from qed.views import charged_mesons, uncharged_mesons
 
-@register.simulation('mu0.0042')
+
 class MySim(Simulation):
     def __init__(self):
-        model = registered_models['all del m sq'](fitter=MinuitFitter)
-        charged = registered_views['charged']()
-        uncharged = registered_views['uncharged']()
+        model = AllDelMSq(fitter=MinuitFitter)
+        charged = charged_mesons()
+        uncharged = uncharged_mesons()
         super(MySim, self).__init__(model, [charged, uncharged])
 
         self.charged_hadrons = {}
@@ -44,3 +45,4 @@ class MySim(Simulation):
 
     def get_plots(self):
         return None
+

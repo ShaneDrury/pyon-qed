@@ -1,10 +1,11 @@
-from pyon.lib.fitting import Fitter, registered_fitters
-from pyon.lib.register import Register
+# from pyon.lib.fitting import Fitter, registered_fitters
+# from pyon.lib.register import Register
 import minuit
+from pyon.lib.fitting import Fitter
 from qed.lib.fitfunc import make_chi_sq
 
 
-@Register(registered_fitters, 'minuit')
+#@Register(registered_fitters, 'minuit')
 class MinuitFitter(Fitter):
     def fit_chi_sq(self, chi_sq, initial_value, **kwargs):
         #print(initial_value)

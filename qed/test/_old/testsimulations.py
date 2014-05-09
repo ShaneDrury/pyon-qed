@@ -1,12 +1,10 @@
 from pyon.lib.meson import PseudoscalarChargedMeson
-from pyon.runner import register
 from pyon import Simulation
-from pyon.runner.register import registered_models, registered_views, \
-    registered_simulations
 import unittest
+from qed.test.testmodel import MyModel
+from qed.test.testview import my_view
 
 
-@register.simulation('my_simulation')
 class MySimulation(Simulation):
     def __init__(self, model, view):
         super(MySimulation, self).__init__(model, view)
@@ -22,9 +20,9 @@ class MySimulation(Simulation):
 
 class TestSimulation(unittest.TestCase):
     def setUp(self):
-        self.my_view = registered_views['my_view']()
-        self.my_model = registered_models['my_model']()
-        sim = registered_simulations['my_simulation']  # alias
+        self.my_view = my_view()
+        self.my_model = MyModel()
+        sim = MySimulation
         self.my_sim = sim(self.my_model, self.my_view)
         bnds = ((0., 1.), (0, None))
         self.my_sim.set_simulation_params(fit_range=range(9, 32+1),
