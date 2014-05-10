@@ -6,7 +6,6 @@ import numpy as np
 #from qed.models import AllDelMSq
 from qed.views import charged_mesons, uncharged_mesons
 
-
 class MySim(Simulation):
     def __init__(self):
         #model = AllDelMSq(fitter=MinuitFitter)
@@ -16,7 +15,6 @@ class MySim(Simulation):
 
         self.charged_hadrons = {}
         for k, had in charged.items():
-            #had = PseudoscalarChargedMeson.from_queryset(v)
             had.sort()
             had.fold()
             had.scale()

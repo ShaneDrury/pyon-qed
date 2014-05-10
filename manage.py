@@ -1,17 +1,17 @@
 """
 Inspired heavily by Django.
 """
+from standalone.settings import APP_FOLDER, APP_NAME, DUMP_DIR, LOGGING_LEVEL
+import logging
+logging.basicConfig(level=LOGGING_LEVEL)  # Put this first to make global
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "standalone.settings")
 from pyon.lib.io import parsers
 from qed.models import TimeSlice, Iwasaki32cChargedMeson
-
-import logging
-logging.basicConfig(level=logging.DEBUG)  # Put this first to make global
 from pyon.runner.app import App
 from jinja2 import Environment, PackageLoader
 import sys
-from standalone.settings import APP_FOLDER, APP_NAME, DUMP_DIR
+
 from qed.simulations import MySim
 
 
