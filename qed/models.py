@@ -3,7 +3,6 @@ Define your models here. These are the things that will be used to analyse the
 data.
 """
 from django.db import models
-#from picklefield import PickledObjectField
 
 
 class Iwasaki32cChargedMeson(models.Model):

@@ -1,30 +1,29 @@
 import logging
 from pyon.runner.simulations import Simulation
 from pyon.lib.meson import PseudoscalarChargedMeson
-from qed.lib.fitting import MinuitFitter
+from qed.lib.fitting import MinuitFitter, all_del_m_sq
 import numpy as np
 #from qed.models import AllDelMSq
-#from qed.views import charged_mesons, uncharged_mesons
+from qed.views import charged_mesons, uncharged_mesons
 
 
 class MySim(Simulation):
     def __init__(self):
-        model = AllDelMSq(fitter=MinuitFitter)
+        #model = AllDelMSq(fitter=MinuitFitter)
         charged = charged_mesons()
         uncharged = uncharged_mesons()
-        super(MySim, self).__init__(model, [charged, uncharged])
+        super(MySim, self).__init__()
 
         self.charged_hadrons = {}
-        for k, v in charged.items():
-            had = PseudoscalarChargedMeson.from_view(v)
+        for k, had in charged.items():
+            #had = PseudoscalarChargedMeson.from_queryset(v)
             had.sort()
             had.fold()
             had.scale()
             self.charged_hadrons[k] = had
 
         self.uncharged_hadrons = {}
-        for k, v in uncharged.items():
-            had = PseudoscalarChargedMeson.from_view(v)
+        for k, had in uncharged.items():
             had.sort()
             had.fold()
             had.scale()
@@ -39,9 +38,10 @@ class MySim(Simulation):
 
     def do_simulation(self):
         logging.info("Starting simulation")
-        action = self.model.main()
-        return action(self.charged_hadrons, self.uncharged_hadrons,
-                      self.simulation_params, self.simulation_params)
+        #action = self.model.main()
+        return all_del_m_sq(self.charged_hadrons, self.uncharged_hadrons,
+                            self.simulation_params, self.simulation_params,
+                            method=MinuitFitter)
 
     def get_plots(self):
         return None

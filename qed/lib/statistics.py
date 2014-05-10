@@ -6,5 +6,5 @@ def equivalent_params(m1, m2, q1, q2):
     Can swap the sign of the charges and keep the masses the same, swap the
     masses AND the charges, or swap the masses and keep the charges the same.
     """
-    return [[(m1, m2), (q1, q2)], [(m1, m2), (-q1, -q2)], [(m2, m1), (q2, q1)],
-            [(m2, m1), (-q2, -q1)]]
+    return [[m1, m2, q1, q2], [m1, m2, -q1, -q2], [m2, m1, q2, q1],
+            [m2, m1, -q2, -q1]]
