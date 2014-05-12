@@ -48,7 +48,7 @@ def parse_from_folder(folder):
 command_dict = {
     'start': start_runner,
     'populatedb': populate_db,
-    }
+}
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:

@@ -1,13 +1,15 @@
+import settings
 import os
-from unittest import skip
-from pyon.lib.io import parsers
 from django.test import TestCase
 from delmsq.models import Iwasaki32cChargedMeson, TimeSlice
+from parsers import Iwasaki32cCharged
 
 
 def parse_from_folder(folder, parser):
     all_data = parser.get_from_folder(folder)
     for d in all_data:
+        if not (d['source'] =='GAM_5' and d['sink'] == 'GAM_5'):
+            continue
         re_dat = d.pop('data')
         im_dat = d.pop('im_data')
         time_slices = d.pop('time_slices')
@@ -21,12 +23,12 @@ def parse_from_folder(folder, parser):
 class ProcessTests(TestCase):
     def setUp(self):
         self.mes = Iwasaki32cChargedMeson
-        self.parser = parsers.Iwasaki32cCharged()
+        self.parser = Iwasaki32cCharged()
 
-    @skip('slow')
+    #@skip('slow')
     def test_add_to_db(self):
         parse_from_folder(os.path.join(
             'delmsq', 'test', 'testfiles', 'correlators', 'f1'), self.parser)
         mes = self.mes.objects.all()[0]
         dat = mes.data.all()[0]
-        self.assertEqual(dat.re, 1064639.0)
+        self.assertEqual(dat.re, 5136023.0)
