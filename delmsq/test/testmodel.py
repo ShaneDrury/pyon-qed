@@ -6,7 +6,7 @@ Run tests with `python djangomanage.py test`
 """
 
 from django.test import TestCase
-from qed.models import Iwasaki32cChargedMeson, TimeSlice
+from delmsq.models import Iwasaki32cChargedMeson, TimeSlice
 
 
 class ModelTests(TestCase):

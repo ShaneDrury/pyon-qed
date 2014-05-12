@@ -1,28 +1,24 @@
 """
 Inspired heavily by Django.
 """
-from standalone.settings import APP_FOLDER, APP_NAME, DUMP_DIR, LOGGING_LEVEL
+import os
+from settings import DUMP_DIR, LOGGING_LEVEL, MEASUREMENTS
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 import logging
 logging.basicConfig(level=LOGGING_LEVEL)  # Put this first to make global
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "standalone.settings")
-from pyon.lib.io import parsers
-from qed.models import TimeSlice, Iwasaki32cChargedMeson
-from pyon.runner.app import App
-from jinja2 import Environment, PackageLoader
-import sys
 
-from qed.simulations import MySim
+from pyon.lib.io import parsers
+from delmsq.models import TimeSlice, Iwasaki32cChargedMeson
+from pyon.runner.project import Project
+import sys
 
 
 def start_runner(*args):
-    template_env = Environment(loader=PackageLoader('qed', 'templates'))
-    template = template_env.get_template('qed/index.html')
-    app = App(APP_FOLDER, name=APP_NAME,
-              dump_dir=DUMP_DIR,
-              template=template)
-    app.register_simulation(MySim, 'mu0.0042')
-    app.main()
+    project = Project(name='QED',
+                      dump_dir=DUMP_DIR)
+    for measurement in MEASUREMENTS:
+        project.register_measurement(measurement)
+    project.main()
 
 
 def populate_db(*args):
@@ -50,15 +46,10 @@ def parse_from_folder(folder):
     logging.debug("Done!")
 
 
-def test_db(*args):
-    pass
-
-
 command_dict = {
     'start': start_runner,
     'populatedb': populate_db,
-    'testdb': test_db
-}
+    }
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:

@@ -3,8 +3,8 @@ from django.test import TestCase
 from pyon.lib.fitting import fit_hadron
 from pyon.lib.io import parsers
 from pyon.lib.meson import PseudoscalarChargedMeson
-from qed.lib.fitting import MinuitFitter
-from qed.models import Iwasaki32cChargedMeson, TimeSlice
+from delmsq.lib.fitting import MinuitFitter
+from delmsq.models import Iwasaki32cChargedMeson, TimeSlice
 import numpy as np
 
 
@@ -35,7 +35,7 @@ class HadronTests(TestCase):
 
     def test_make_hadron(self):
         parse_from_folder(os.path.join(
-            'qed', 'test', 'testfiles', 'correlators', 'f1'))
+            'delmsq', 'test', 'testfiles', 'correlators', 'f1'))
         qs = my_view()
         mes = PseudoscalarChargedMeson.from_queryset(qs)
         mes.sort()

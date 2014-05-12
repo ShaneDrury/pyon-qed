@@ -1,9 +1,9 @@
-{% extends 'qed/base.html' %}
+{% extends 'base.html' %}
 {% block title %}Pyon Report: {{ title }}{% endblock %}
 {% block body %}
     <br>
     <div class="container">
-        {% for key, value in sim_results.items() %}
+        {% for key, value in measurement_results.items() %}
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">{{ key }}</h3>

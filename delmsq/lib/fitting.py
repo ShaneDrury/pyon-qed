@@ -1,13 +1,10 @@
-# from pyon.lib.fitting import Fitter, registered_fitters
-# from pyon.lib.register import Register
 import logging
 import minuit
-from pyon.lib.fitting import Fitter, FitParams, fit_hadron
+from pyon.lib.fitting import Fitter, fit_hadron, FitParams
 from pyon.lib.resampling import Jackknife
-from qed.lib.fitfunc import make_chi_sq
+from delmsq.lib.fitfunc import make_chi_sq
 
 
-#@Register(registered_fitters, 'minuit')
 class MinuitFitter(Fitter):
     def fit_chi_sq(self, chi_sq, initial_value, **kwargs):
         #print(initial_value)
@@ -22,56 +19,8 @@ class MinuitFitter(Fitter):
         #return GenericChi2(data, errors, fit_range, fit_func)
 
 
-def all_del_m_sq(charged_hadrons,
-                    uncharged_hadrons,
-                    hadron1_kwargs,
-                    hadron2_kwargs,
-                    method=None):
-    all_fit_params = {}
-    already_fit = {}
-    for k, ch in charged_hadrons.items():
-        m1, m2, q1, q2 = k
-        unch = uncharged_hadrons[(m1, m2)]
-
-        if k not in already_fit:
-            fp1 = fit_hadron(ch, method=method, **hadron1_kwargs)
-            already_fit[k] = fp1
-        else:
-            fp1 = already_fit[k]
-
-        if (m1, m2) not in already_fit:
-            fp2 = fit_hadron(unch, method=method, **hadron2_kwargs)
-            already_fit[(m1, m2)] = fp2
-        else:
-            fp2 = already_fit[(m1, m2)]
-
-        central_m1 = fp1.average_params['m']
-        central_m2 = fp2.average_params['m']
-
-        err_m1 = fp1.errs['m']
-        err_m2 = fp2.errs['m']
-
-        resampled_m1 = fp1.resampled_params['m']
-        resampled_m2 = fp2.resampled_params['m']
-        resampled_del_m2 = [del_m_sq(m1, m2)
-                            for m1, m2 in zip(resampled_m1, resampled_m2)]
-
-        central_del_m2 = del_m_sq(central_m1, central_m2)
-        resampler = Jackknife(n=1)
-        err_del_m2 = resampler.calculate_errors(central_del_m2,
-                                                resampled_del_m2)
-        logging.debug("Mass {}: {} {}".format(k, central_m1, err_m1))
-        logging.debug("Mass {}: {} {}".format((m1, m2), central_m2, err_m2))
-        logging.debug("Mass-squared difference {}: {} {}"
-                      .format(k, central_del_m2*1000, err_del_m2*1000))
-        all_fit_params[k] = FitParams(central_del_m2, err_del_m2,
-                                      resampled_del_m2)
-    return all_fit_params
-
-
 def del_m_sq(m1, m2):
     return m1*m1 - m2*m2
-
 
     # If iminuit worked with Python3 this would be the solution:
     # class GenericChi2:
@@ -153,3 +102,50 @@ def del_m_sq(m1, m2):
     #
     #     raise TypeError("Unable to obtain function signature")
     #     return None
+
+
+def all_del_m_sq(charged_hadrons,
+                 uncharged_hadrons,
+                 hadron1_kwargs,
+                 hadron2_kwargs,
+                 method=None):
+    all_fit_params = {}
+    already_fit = {}
+    for k, ch in charged_hadrons.items():
+        m1, m2, q1, q2 = k
+        unch = uncharged_hadrons[(m1, m2)]
+
+        if k not in already_fit:
+            fp1 = fit_hadron(ch, method=method, **hadron1_kwargs)
+            already_fit[k] = fp1
+        else:
+            fp1 = already_fit[k]
+
+        if (m1, m2) not in already_fit:
+            fp2 = fit_hadron(unch, method=method, **hadron2_kwargs)
+            already_fit[(m1, m2)] = fp2
+        else:
+            fp2 = already_fit[(m1, m2)]
+
+        central_m1 = fp1.average_params['m']
+        central_m2 = fp2.average_params['m']
+
+        err_m1 = fp1.errs['m']
+        err_m2 = fp2.errs['m']
+
+        resampled_m1 = fp1.resampled_params['m']
+        resampled_m2 = fp2.resampled_params['m']
+        resampled_del_m2 = [del_m_sq(m1, m2)
+                            for m1, m2 in zip(resampled_m1, resampled_m2)]
+
+        central_del_m2 = del_m_sq(central_m1, central_m2)
+        resampler = Jackknife(n=1)
+        err_del_m2 = resampler.calculate_errors(central_del_m2,
+                                                resampled_del_m2)
+        logging.debug("Mass {}: {} {}".format(k, central_m1, err_m1))
+        logging.debug("Mass {}: {} {}".format((m1, m2), central_m2, err_m2))
+        logging.debug("Mass-squared difference {}: {} {}"
+                      .format(k, central_del_m2*1000, err_del_m2*1000))
+        all_fit_params[k] = FitParams(central_del_m2, err_del_m2,
+                                      resampled_del_m2)
+    return all_fit_params

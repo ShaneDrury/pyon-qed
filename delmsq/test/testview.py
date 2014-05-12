@@ -1,8 +1,8 @@
 import os
 from unittest import skip
-from pyon.lib.io import parsers
 from django.test import TestCase
-from qed.models import Iwasaki32cChargedMeson, TimeSlice
+from pyon.lib.io import parsers
+from delmsq.models import Iwasaki32cChargedMeson, TimeSlice
 
 
 def parse_from_folder(folder, parser):
@@ -18,15 +18,21 @@ def parse_from_folder(folder, parser):
             mes.data.add(time_slice)
 
 
-class ProcessTests(TestCase):
+def my_view():
+    qs = Iwasaki32cChargedMeson.objects.filter(charge_1=-1, charge_2=-1,
+                                               mass_1=0.03, mass_2=0.03,
+                                               source='GAM_5',
+                                               sink='GAM_5')
+    return qs
+
+
+class ViewTests(TestCase):
     def setUp(self):
         self.mes = Iwasaki32cChargedMeson
-        self.parser = parsers.Iwasaki32cCharged()
-
     @skip('slow')
-    def test_add_to_db(self):
+    def test_filter(self):
         parse_from_folder(os.path.join(
-            'qed', 'test', 'testfiles', 'correlators', 'f1'), self.parser)
-        mes = self.mes.objects.all()[0]
-        dat = mes.data.all()[0]
-        self.assertEqual(dat.re, 1064639.0)
+            'delmsq', 'test', 'testfiles', 'correlators', 'f1'),
+            parsers.Iwasaki32cCharged())
+        qs = my_view()
+        self.assertEqual(len(qs), 131)

@@ -1,9 +1,9 @@
 from distutils.core import setup
 
 setup(
-    name='pyon-qed',
+    name='pyon-delmsq',
     version='',
-    packages=['qed', 'qed.lib'],
+    packages=['delmsq', 'delmsq.lib'],
     url='',
     license='',
     author='srd1g10',
