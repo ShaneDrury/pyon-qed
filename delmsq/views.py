@@ -35,12 +35,16 @@ def charged_mesons():
             fd.append([[s.re for s in q.data.all()] for q in one_mass])
         average_data = np.average(fd, axis=0)
         config_numbers = [q.config_number for q in one_mass]
-        charged_hadrons[(m1, m2, q1, q2)] = PseudoscalarChargedMeson(
+        had = PseudoscalarChargedMeson(
             average_data,
             masses=(m1, m2),
             charges=(q1, q2),
             config_numbers=config_numbers
         )
+        had.sort()
+        had.fold()
+        had.scale()
+        charged_hadrons[(m1, m2, q1, q2)] = had
     return charged_hadrons
 
 
@@ -61,11 +65,15 @@ def uncharged_mesons():
         logging.debug("Adding {}".format((m1, m2)))
         fd = [[s.re for s in q.data.all()] for q in one_mass]
         config_numbers = [q.config_number for q in one_mass]
-        uncharged_hadrons[(m1, m2)] = PseudoscalarChargedMeson(
+        had = PseudoscalarChargedMeson(
             fd,
             masses=(m1, m2),
             charges=(0, 0),
             config_numbers=config_numbers
         )
+        had.sort()
+        had.fold()
+        had.scale()
+        uncharged_hadrons[(m1, m2)] = had
     return uncharged_hadrons
 
