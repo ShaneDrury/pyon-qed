@@ -26,7 +26,7 @@ def populate_db(*args):
 
 
 def parse_from_folder(folder):
-    all_data = Iwasaki32cCharged().get_from_folder(folder)
+    all_data = Iwasaki32cCharged(pseudo=True).get_from_folder(folder)
     for d in all_data:
         if not (d['source'] == 'GAM_5' and d['sink'] == 'GAM_5'):
             continue
