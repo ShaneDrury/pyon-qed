@@ -6,16 +6,16 @@ Run tests with `python djangomanage.py test`
 """
 
 from django.test import TestCase
-from delmsq.models import Iwasaki32cChargedMeson, TimeSlice
+from delmsq.models import ChargedMeson, TimeSlice
 
 
 class ModelTests(TestCase):
     def setUp(self):
-        self.mes = Iwasaki32cChargedMeson
+        self.mes = ChargedMeson
         self.data = [1., 2., 3.]
         im_data = [0., 0., 0.]
         t_range = range(len(self.data))
-        mes = Iwasaki32cChargedMeson(source='GAM_5',
+        mes = ChargedMeson(source='GAM_5',
                                      sink='GAM_5',
                                      mass_1=0.03,
                                      mass_2=0.03,

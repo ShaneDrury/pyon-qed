@@ -1,11 +1,7 @@
 import logging
-from jinja2 import Environment, PackageLoader
 import numpy as np
 from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
 from delmsq.views import charged_mesons, uncharged_mesons
-
-template_env = Environment(loader=PackageLoader('delmsq', 'templates'))
-template = template_env.get_template('index.html')
 
 
 def del_m_sq_0042():

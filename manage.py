@@ -3,11 +3,12 @@ Inspired heavily by Django.
 """
 import os
 from parsers import Iwasaki32cCharged
-from settings import DUMP_DIR, LOGGING_LEVEL, MEASUREMENTS
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+from qed.settings import DUMP_DIR, LOGGING_LEVEL  #, MEASUREMENTS
+from qed.measurements import measurements
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qed.settings")
 import logging
 logging.basicConfig(level=LOGGING_LEVEL)  # Put this first to make global
-from delmsq.models import TimeSlice, Iwasaki32cChargedMeson
+from delmsq.models import TimeSlice, ChargedMeson
 from pyon.runner.project import Project
 import sys
 
@@ -15,8 +16,8 @@ import sys
 def start_runner(*args):
     project = Project(name='QED',
                       dump_dir=DUMP_DIR)
-    for measurement in MEASUREMENTS:
-        project.register_measurement(measurement)
+    for meas in measurements:
+        project.register_measurement(meas)
     project.main()
 
 
@@ -37,7 +38,7 @@ def parse_from_folder(folder):
         re_dat = d.pop('data')
         im_dat = d.pop('im_data')
         time_slices = d.pop('time_slices')
-        mes = Iwasaki32cChargedMeson(**d)
+        mes = ChargedMeson(**d)
         mes.save()
         for t, re, im in zip(time_slices, re_dat, im_dat):
             time_slice = TimeSlice(t=t, re=re, im=im)

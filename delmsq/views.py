@@ -5,13 +5,13 @@ A view is used as a way to separate data from formulae. The return value of a
 view function should be whatever data that a formulae uses.
 """
 from pyon.lib.meson import PseudoscalarChargedMeson
-from delmsq.models import Iwasaki32cChargedMeson
+from delmsq.models import ChargedMeson
 import logging
 from delmsq.lib.statistics import equivalent_params
 import numpy as np
 
 # pseudoscalar mesons
-ps_mesons = Iwasaki32cChargedMeson.objects.filter(source='GAM_5', sink='GAM_5')
+ps_mesons = ChargedMeson.objects.filter(source='GAM_5', sink='GAM_5')
 
 
 def charged_mesons():

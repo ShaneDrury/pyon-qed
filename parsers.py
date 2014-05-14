@@ -80,11 +80,6 @@ def parse_iwasaki_32c_charged_meson_file(f):
     return data
 
 
-# class Iwasaki32cCharged(Parser):
-#     def get_from_file(self, file_name):
-#         return parse_iwasaki_32c_charged_meson_file_regex(file_name)
-
-
 class Iwasaki32cCharged(Parser):
     def __init__(self, pseudo=True):
         self.pseudo = pseudo
@@ -146,3 +141,6 @@ class Iwasaki32cCharged(Parser):
         return data
 
 
+class LECParser(Parser):
+    def get_from_file(self, file_name):
+        pass

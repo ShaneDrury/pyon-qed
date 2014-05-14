@@ -4,7 +4,7 @@ from pyon.lib.fitting import fit_hadron
 from pyon.lib.io import parsers
 from pyon.lib.meson import PseudoscalarChargedMeson
 from delmsq.lib.fitting import MinuitFitter
-from delmsq.models import Iwasaki32cChargedMeson, TimeSlice
+from delmsq.models import ChargedMeson, TimeSlice
 import numpy as np
 
 
@@ -14,7 +14,7 @@ def parse_from_folder(folder):
         re_dat = d.pop('data')
         im_dat = d.pop('im_data')
         time_slices = d.pop('time_slices')
-        mes = Iwasaki32cChargedMeson(**d)
+        mes = ChargedMeson(**d)
         mes.save()
         for t, re, im in zip(time_slices, re_dat, im_dat):
             time_slice = TimeSlice(t=t, re=re, im=im)
@@ -22,7 +22,7 @@ def parse_from_folder(folder):
 
 
 def my_view():
-    qs = Iwasaki32cChargedMeson.objects.filter(charge_1=-1, charge_2=-1,
+    qs = ChargedMeson.objects.filter(charge_1=-1, charge_2=-1,
                                                mass_1=0.03, mass_2=0.03,
                                                source='GAM_5',
                                                sink='GAM_5')
@@ -31,7 +31,7 @@ def my_view():
 
 class HadronTests(TestCase):
     def setUp(self):
-        self.mes = Iwasaki32cChargedMeson
+        self.mes = ChargedMeson
 
     def test_make_hadron(self):
         parse_from_folder(os.path.join(

@@ -3,13 +3,19 @@ import os
 
 
 PROJECT_ROOT = os.path.normpath(os.path.dirname(__file__))
-DUMP_DIR = os.path.join(PROJECT_ROOT, 'results')
+DUMP_DIR = os.path.join(PROJECT_ROOT, '../results')
 LOGGING_LEVEL = logging.DEBUG
-MEASUREMENTS = ('delmsq.measurement.del_m_sq_0042', )
+TEMPLATE_DIRS = (
+    os.path.join(PROJECT_ROOT, '../templates'),
+)
 
 # Django things
 SECRET_KEY = 'foo'
-INSTALLED_APPS = ("delmsq", )
+INSTALLED_APPS = (
+    'qed',
+    'delmsq',
+)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

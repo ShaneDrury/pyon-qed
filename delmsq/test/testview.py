@@ -2,7 +2,7 @@ import os
 from unittest import skip
 from django.test import TestCase
 from pyon.lib.io import parsers
-from delmsq.models import Iwasaki32cChargedMeson, TimeSlice
+from delmsq.models import ChargedMeson, TimeSlice
 
 
 def parse_from_folder(folder, parser):
@@ -11,7 +11,7 @@ def parse_from_folder(folder, parser):
         re_dat = d.pop('data')
         im_dat = d.pop('im_data')
         time_slices = d.pop('time_slices')
-        mes = Iwasaki32cChargedMeson(**d)
+        mes = ChargedMeson(**d)
         mes.save()
         for t, re, im in zip(time_slices, re_dat, im_dat):
             time_slice = TimeSlice(t=t, re=re, im=im)
@@ -19,7 +19,7 @@ def parse_from_folder(folder, parser):
 
 
 def my_view():
-    qs = Iwasaki32cChargedMeson.objects.filter(charge_1=-1, charge_2=-1,
+    qs = ChargedMeson.objects.filter(charge_1=-1, charge_2=-1,
                                                mass_1=0.03, mass_2=0.03,
                                                source='GAM_5',
                                                sink='GAM_5')
@@ -28,7 +28,7 @@ def my_view():
 
 class ViewTests(TestCase):
     def setUp(self):
-        self.mes = Iwasaki32cChargedMeson
+        self.mes = ChargedMeson
     @skip('slow')
     def test_filter(self):
         parse_from_folder(os.path.join(
