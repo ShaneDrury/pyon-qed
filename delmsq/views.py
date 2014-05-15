@@ -4,6 +4,7 @@ A :func:`view` is a particular aspect of a :class:`Model`
 A view is used as a way to separate data from formulae. The return value of a
 view function should be whatever data that a formulae uses.
 """
+import functools
 from pyon.lib.meson import PseudoscalarChargedMeson
 from delmsq.models import ChargedMeson
 import logging
@@ -13,7 +14,7 @@ import numpy as np
 # pseudoscalar mesons
 ps_mesons = ChargedMeson.objects.filter(source='GAM_5', sink='GAM_5')
 
-
+@functools.lru_cache(maxsize=None)
 def charged_mesons():
     charged_hadrons = {}
     charged = ps_mesons.exclude(charge_1=0, charge_2=0)
@@ -47,7 +48,7 @@ def charged_mesons():
         charged_hadrons[(m1, m2, q1, q2)] = had
     return charged_hadrons
 
-
+@functools.lru_cache(maxsize=None)
 def uncharged_mesons():
     uncharged_hadrons = {}
     already_done = set()

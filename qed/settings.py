@@ -8,12 +8,14 @@ LOGGING_LEVEL = logging.DEBUG
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, '../templates'),
 )
+ROOT_MEASUREMENTS = 'qed.measurements'
 
 # Django things
 SECRET_KEY = 'foo'
 INSTALLED_APPS = (
     'qed',
     'delmsq',
+    'meas2'
 )
 
 DATABASES = {

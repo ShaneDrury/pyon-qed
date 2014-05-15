@@ -111,9 +111,11 @@ def all_del_m_sq(charged_hadrons,
                  method=None):
     all_fit_params = {}
     already_fit = {}
-    for k, ch in charged_hadrons.items():
+    charged = charged_hadrons()
+    uncharged = uncharged_hadrons()
+    for k, ch in charged.items():
         m1, m2, q1, q2 = k
-        unch = uncharged_hadrons[(m1, m2)]
+        unch = uncharged[(m1, m2)]
 
         if k not in already_fit:
             fp1 = fit_hadron(ch, method=method, **hadron1_kwargs)

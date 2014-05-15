@@ -3,7 +3,6 @@ from pyon.runner.measurement import Measurement
 from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
 from delmsq.views import charged_mesons, uncharged_mesons
 
-
 bnds = ((0., 1.), (0, None))
 fit_params = dict(fit_range=np.array(range(7, 25+1)),
                   initial_value=dict(m=0.18, c=1.39432),
@@ -11,14 +10,17 @@ fit_params = dict(fit_range=np.array(range(7, 25+1)),
                   covariant=False,
                   bounds=bnds)
 
-
-meas1 = Measurement(all_del_m_sq,
+meas2 = Measurement(all_del_m_sq,
                     (charged_mesons, uncharged_mesons, fit_params, fit_params),
-                    simulation_kwargs={'method': MinuitFitter})
+simulation_kwargs={'method': MinuitFitter})
 
 measurements = [
     {
-        'name': 'all', 'measurement': meas1,
+        'name': 'sub_meas1', 'measurement': meas2,
+        'template_name' : 'delmsq/index.html'
+    },
+    {
+        'name': 'sub_meas2', 'measurement': meas2,
         'template_name' : 'delmsq/index.html'
     },
     ]

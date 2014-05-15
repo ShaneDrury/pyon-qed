@@ -3,8 +3,7 @@ Inspired heavily by Django.
 """
 import os
 from parsers import Iwasaki32cCharged
-from qed.settings import DUMP_DIR, LOGGING_LEVEL  #, MEASUREMENTS
-from qed.measurements import measurements
+from qed.settings import DUMP_DIR, LOGGING_LEVEL
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qed.settings")
 import logging
 logging.basicConfig(level=LOGGING_LEVEL)  # Put this first to make global
@@ -16,8 +15,6 @@ import sys
 def start_runner(*args):
     project = Project(name='QED',
                       dump_dir=DUMP_DIR)
-    for meas in measurements:
-        project.register_measurement(meas)
     project.main()
 
 
