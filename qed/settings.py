@@ -1,7 +1,7 @@
 import logging
 import os
 
-
+PROJECT_NAME = 'QED'
 PROJECT_ROOT = os.path.normpath(os.path.dirname(__file__))
 DUMP_DIR = os.path.join(PROJECT_ROOT, '../results')
 LOGGING_LEVEL = logging.DEBUG

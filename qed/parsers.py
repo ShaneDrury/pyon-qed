@@ -1,8 +1,13 @@
+
 import logging
 import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qed.settings")
+from django.conf import settings
+logging.basicConfig(level=settings.LOGGING_LEVEL)  # Put this first to make global
 import re
 from pyon.lib.io.formats import RE_SCIENTIFIC
 from pyon.lib.io.parsers import Parser
+from delmsq.models import ChargedMeson, TimeSlice
 
 __author__ = 'srd1g10'
 
@@ -144,3 +149,32 @@ class Iwasaki32cCharged(Parser):
 class LECParser(Parser):
     def get_from_file(self, file_name):
         pass
+
+
+def populate_db():
+    parse_from_folder(os.path.join('data', '32c', 'IWASAKI+DSDR', 'ms0.045',
+                                   'mu0.0042'))
+
+
+def parse_from_folder(folder):
+    all_data = Iwasaki32cCharged(pseudo=True).get_from_folder(folder)
+    for d in all_data:
+        if not (d['source'] == 'GAM_5' and d['sink'] == 'GAM_5'):
+            continue
+        logging.debug("Processing {} {} {}".format((d['mass_1'], d['mass_2']),
+                                                   (d['charge_1'],
+                                                    d['charge_2']),
+                                                   d['config_number']))
+        re_dat = d.pop('data')
+        im_dat = d.pop('im_data')
+        time_slices = d.pop('time_slices')
+        mes = ChargedMeson(**d)
+        mes.save()
+        for t, re, im in zip(time_slices, re_dat, im_dat):
+            time_slice = TimeSlice(t=t, re=re, im=im)
+            mes.data.add(time_slice)
+    logging.debug("Done!")
+
+if __name__ == '__main__':
+
+    populate_db()

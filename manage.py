@@ -1,61 +1,10 @@
-"""
-Inspired heavily by Django.
-"""
+#!/usr/bin/env python
 import os
-from parsers import Iwasaki32cCharged
-from qed.settings import DUMP_DIR, LOGGING_LEVEL
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qed.settings")
-import logging
-logging.basicConfig(level=LOGGING_LEVEL)  # Put this first to make global
-from delmsq.models import TimeSlice, ChargedMeson
-from pyon.runner.project import Project
 import sys
 
+if __name__ == "__main__":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qed.settings")
 
-def start_runner(*args):
-    project = Project(name='QED',
-                      dump_dir=DUMP_DIR)
-    project.main()
+    from pyon.core.management import execute_from_command_line
+    execute_from_command_line(sys.argv)
 
-
-def populate_db(*args):
-    parse_from_folder(os.path.join('data', '32c', 'IWASAKI+DSDR', 'ms0.045',
-                                   'mu0.0042'))
-
-
-def parse_from_folder(folder):
-    all_data = Iwasaki32cCharged(pseudo=True).get_from_folder(folder)
-    for d in all_data:
-        if not (d['source'] == 'GAM_5' and d['sink'] == 'GAM_5'):
-            continue
-        logging.debug("Processing {} {} {}".format((d['mass_1'], d['mass_2']),
-                                                   (d['charge_1'],
-                                                    d['charge_2']),
-                                                   d['config_number']))
-        re_dat = d.pop('data')
-        im_dat = d.pop('im_data')
-        time_slices = d.pop('time_slices')
-        mes = ChargedMeson(**d)
-        mes.save()
-        for t, re, im in zip(time_slices, re_dat, im_dat):
-            time_slice = TimeSlice(t=t, re=re, im=im)
-            mes.data.add(time_slice)
-    logging.debug("Done!")
-
-
-command_dict = {
-    'start': start_runner,
-    'populatedb': populate_db,
-}
-
-if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        print("Parameter must be one of {}".format(list(command_dict.keys())))
-        exit()
-    command = sys.argv[1]
-    args = sys.argv[2:]
-    if command in command_dict:
-        command_dict[command](*args)
-    else:
-        print("Parameter must be one of {}".format(list(command_dict.keys())))
-        exit()

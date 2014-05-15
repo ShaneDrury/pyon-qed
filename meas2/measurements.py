@@ -12,7 +12,7 @@ fit_params = dict(fit_range=np.array(range(7, 25+1)),
 
 meas2 = Measurement(all_del_m_sq,
                     (charged_mesons, uncharged_mesons, fit_params, fit_params),
-simulation_kwargs={'method': MinuitFitter})
+                    simulation_kwargs={'method': MinuitFitter})
 
 measurements = [
     {

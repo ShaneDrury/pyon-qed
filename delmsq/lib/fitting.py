@@ -54,55 +54,6 @@ def del_m_sq(m1, m2):
     #         return self.__dict__[s]
     #
     #
-    # def is_bound(f):
-    #     """test whether f is bound function"""
-    #     return getattr(f, 'im_self', None) is not None
-    #
-    #
-    # def describe(f):
-    #     """extract function signature
-    #
-    #     ..seealso::
-    #
-    #         :ref:`function-sig-label`
-    #     """
-    #
-    #     try:
-    #         vnames = f.func_code.co_varnames
-    #         #bound method and fake function will be None
-    #         if is_bound(f):
-    #             #bound method dock off self
-    #             return list(vnames[1:f.func_code.co_argcount])
-    #         else:
-    #             #unbound and fakefunc
-    #             return list(vnames[:f.func_code.co_argcount])
-    #     except Exception as e:
-    #         pass
-    #         #using __call__ funccode
-    #
-    #     try:
-    #         #vnames = f.__call__.func_code.co_varnames
-    #         return list(f.__call__.func_code.co_varnames[1:f.__call__.func_code.co_argcount])
-    #     except Exception as e:
-    #         pass
-    #
-    #     try:
-    #         return list(inspect.getargspec(f.__call__)[0][1:])
-    #     except Exception as e:
-    #         pass
-    #
-    #     try:
-    #         return list(inspect.getargspec(f)[0])
-    #     except Exception as e:
-    #         pass
-    #
-    #     #now we are parsing __call__.__doc__
-    #     #we assume that __call__.__doc__ doesn't have self
-    #     #this is what cython gives
-    #
-    #     raise TypeError("Unable to obtain function signature")
-    #     return None
-
 
 def all_del_m_sq(charged_hadrons,
                  uncharged_hadrons,
