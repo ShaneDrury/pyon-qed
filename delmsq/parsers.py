@@ -178,7 +178,6 @@ def parse_from_folder(folder, m_l):
         d['id'] = id_start
         id_start += 1
         mes = ChargedMeson32c(**d)
-        #mes.save()
         bulk_list = [TimeSlice(meson=mes, t=t, re=real, im=im)
                      for t, real, im in zip(time_slices, re_dat, im_dat)]
         TimeSlice.objects.bulk_create(bulk_list)
