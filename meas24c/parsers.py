@@ -1,6 +1,9 @@
 import os
+
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qed.settings")
 from django.conf import settings
+from django.db.models import Max
 from meas24c.models import ChargedMeson24c, TimeSlice
 import logging
 logging.basicConfig(level=settings.LOGGING_LEVEL)
@@ -117,28 +120,44 @@ class Iwasaki24cCharged(Parser):
 
 
 def populate_db():
+    logging.debug("Adding 0.02")
+    parse_from_folder(os.path.join('data', '24c', '0.02'), 0.02)
+    logging.debug("Adding 0.005")
     parse_from_folder(os.path.join('data', '24c', '0.005'), 0.005)
+    logging.debug("Adding 0.03")
+    parse_from_folder(os.path.join('data', '24c', '0.03'), 0.03)
+    logging.debug("Adding 0.001, 0.005")
+    parse_from_folder(os.path.join('data', '24c', 'mv0.001-msea0.005'), 0.005)
+    logging.debug("Adding 0.001, 0.01")
+    parse_from_folder(os.path.join('data', '24c', 'mv0.001-msea0.01'), 0.01)
+    logging.debug("Adding 0.01")
+    parse_from_folder(os.path.join('data', '24c', '0.01-1-180'), 0.01)
 
 
 def parse_from_folder(folder, m_l):
     all_data = Iwasaki24cCharged(pseudo=True).get_from_folder(folder)
+    id_start = (ChargedMeson24c.objects.aggregate(Max('id'))['id__max'] or 0) + 1
+    bulk_mesons = []
     for d in all_data:
         if not (d['source'] == 'GFWALL' and d['sink'] == 'GAM_5'):
             continue
-        logging.debug("Processing {} {} {}".format((d['mass_1'], d['mass_2']),
-                                                   (d['charge_1'],
-                                                    d['charge_2']),
-                                                   d['config_number']))
+        # logging.debug("Processing {} {} {} {}".format((d['mass_1'], d['mass_2']),
+        #                                            (d['charge_1'],
+        #                                             d['charge_2']),
+        #                                            d['config_number'], id_start))
         re_dat = d.pop('data')
         im_dat = d.pop('im_data')
         time_slices = d.pop('time_slices')
         d['m_l'] = m_l
+        d['id'] = id_start
+        id_start += 1
         mes = ChargedMeson24c(**d)
-        mes.save()
+        #mes.save()
         bulk_list = [TimeSlice(meson=mes, t=t, re=real, im=im)
                      for t, real, im in zip(time_slices, re_dat, im_dat)]
         TimeSlice.objects.bulk_create(bulk_list)
-    logging.debug("Done!")
+        bulk_mesons.append(mes)
+    ChargedMeson24c.objects.bulk_create(bulk_mesons)
 
 if __name__ == '__main__':
     populate_db()
