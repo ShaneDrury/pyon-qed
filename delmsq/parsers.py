@@ -1,37 +1,39 @@
-
 import logging
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qed.settings")
 from django.conf import settings
-logging.basicConfig(level=settings.LOGGING_LEVEL)  # Put this first to make global
+logging.basicConfig(level=settings.LOGGING_LEVEL)
 import re
 from pyon.lib.io.formats import RE_SCIENTIFIC
 from pyon.lib.io.parsers import Parser
-from delmsq.models import ChargedMeson, TimeSlice
+from delmsq.models import ChargedMeson32c, TimeSlice
 
 __author__ = 'srd1g10'
 
 IWASAKI_REGEX = {
-    'filename': ("\w+\.src\d+\."
-                 "ch1(?P<charge1>{res})\.ch2(?P<charge2>{res})\.".format(res=RE_SCIENTIFIC) +
-                 "m1(?P<mass1>{res})\.m2(?P<mass2>{res})\.".format(res=RE_SCIENTIFIC) +
-                 "dat\.(?P<config_number>\d+)"),
-    'data': ("^STARTPROP\n"
-             "^MASSES:\s\s(?P<m1>{res})\s{{3}}(?P<m2>{res})".format(res=RE_SCIENTIFIC) + "\n"
-                                                                                         "^SOURCE:\s(?P<source>\w+)\n"
-                                                                                         "^SINKS:\s(?P<sink>\w+)\n"
-                                                                                         "(?P<data>" + "(^\d+\s\s{res}\s\s{res}".format(res=RE_SCIENTIFIC)
-             + "\n)+)"
-               "^ENDPROP"),
+    'filename': (
+        "\w+\.src\d+\."
+        "ch1(?P<charge1>{res})\.ch2(?P<charge2>{res})\.".format(res=RE_SCIENTIFIC) +
+        "m1(?P<mass1>{res})\.m2(?P<mass2>{res})\.".format(res=RE_SCIENTIFIC) +
+        "dat\.(?P<config_number>\d+)"),
+    'data': (
+        "^STARTPROP\n"
+        "^MASSES:\s\s(?P<m1>{res})\s{{3}}(?P<m2>{res})".format(res=RE_SCIENTIFIC) + "\n"
+        "^SOURCE:\s(?P<source>\w+)\n"
+        "^SINKS:\s(?P<sink>\w+)\n"
+        "(?P<data>" + "(^\d+\s\s{res}\s\s{res}".format(res=RE_SCIENTIFIC)
+        + "\n)+)"
+        "^ENDPROP"),
     }
 
-IWASAKI_PSEUDO = ("^STARTPROP\n"
-             "^MASSES:\s\s(?P<m1>{res})\s{{3}}(?P<m2>{res})".format(res=RE_SCIENTIFIC) + "\n"
-                                                                                         "^SOURCE:\sGAM_5\n"
-                                                                                         "^SINKS:\sGAM_5\n"
-                                                                                         "(?P<data>" + "(^\d+\s\s{res}\s\s{res}".format(res=RE_SCIENTIFIC)
-             + "\n)+)"
-               "^ENDPROP")
+IWASAKI_PSEUDO = (
+    "^STARTPROP\n"
+    "^MASSES:\s\s(?P<m1>{res})\s{{3}}(?P<m2>{res})".format(res=RE_SCIENTIFIC) + "\n"
+    "^SOURCE:\sGAM_5\n"
+    "^SINKS:\sGAM_5\n"
+    "(?P<data>" + "(^\d+\s\s{res}\s\s{res}".format(res=RE_SCIENTIFIC)
+    + "\n)+)"
+      "^ENDPROP")
 IWASAKI_COMPILED_REGEX = re.compile(IWASAKI_REGEX['data'], re.MULTILINE)
 IWASAKI_COMPILED_REGEX_PSEUDO = re.compile(IWASAKI_PSEUDO, re.MULTILINE)
 
@@ -153,10 +155,10 @@ class LECParser(Parser):
 
 def populate_db():
     parse_from_folder(os.path.join('data', '32c', 'IWASAKI+DSDR', 'ms0.045',
-                                   'mu0.0042'))
+                                   'mu0.0042'), 0.0042)
 
 
-def parse_from_folder(folder):
+def parse_from_folder(folder, m_l):
     all_data = Iwasaki32cCharged(pseudo=True).get_from_folder(folder)
     for d in all_data:
         if not (d['source'] == 'GAM_5' and d['sink'] == 'GAM_5'):
@@ -168,11 +170,12 @@ def parse_from_folder(folder):
         re_dat = d.pop('data')
         im_dat = d.pop('im_data')
         time_slices = d.pop('time_slices')
-        mes = ChargedMeson(**d)
+        d['m_l'] = m_l
+        mes = ChargedMeson32c(**d)
         mes.save()
-        for t, re, im in zip(time_slices, re_dat, im_dat):
-            time_slice = TimeSlice(t=t, re=re, im=im)
-            mes.data.add(time_slice)
+        bulk_list = [TimeSlice(meson=mes, t=t, re=real, im=im)
+                     for t, real, im in zip(time_slices, re_dat, im_dat)]
+        TimeSlice.objects.bulk_create(bulk_list)
     logging.debug("Done!")
 
 if __name__ == '__main__':

@@ -6,13 +6,13 @@ view function should be whatever data that a formulae uses.
 """
 import functools
 from pyon.lib.meson import PseudoscalarChargedMeson
-from delmsq.models import ChargedMeson
+from delmsq.models import ChargedMeson32c
 import logging
 from delmsq.lib.statistics import equivalent_params
 import numpy as np
 
 # pseudoscalar mesons
-ps_mesons = ChargedMeson.objects.filter(source='GAM_5', sink='GAM_5')
+ps_mesons = ChargedMeson32c.objects.filter(source='GAM_5', sink='GAM_5')
 
 @functools.lru_cache(maxsize=None)
 def charged_mesons():

@@ -15,7 +15,7 @@ SECRET_KEY = 'foo'
 INSTALLED_APPS = (
     'qed',
     'delmsq',
-    'meas2'
+    'meas24c',
 )
 
 DATABASES = {

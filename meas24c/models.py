@@ -1,14 +1,10 @@
-"""
-Define your models here. These define the structure of the tables in the
-database and use Django's syntax.
-"""
 from django.db import models
 
 
-class ChargedMeson32c(models.Model):
+class ChargedMeson24c(models.Model):
     source = models.CharField(max_length=20)
     sink = models.CharField(max_length=20)
-    m_l = models.FloatField()
+    m_l = models.FloatField()  # light sea mass
     mass_1 = models.FloatField()
     mass_2 = models.FloatField()
     charge_1 = models.IntegerField()
@@ -20,7 +16,4 @@ class TimeSlice(models.Model):
     t = models.IntegerField(db_index=True)
     re = models.FloatField()
     im = models.FloatField()
-    meson = models.ForeignKey(ChargedMeson32c, related_name='data')
-
-
-# class LEC(models.Model):
+    meson = models.ForeignKey(ChargedMeson24c, related_name='data')
