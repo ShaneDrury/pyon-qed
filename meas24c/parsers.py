@@ -21,24 +21,20 @@ IWASAKI_24C_REGEX = {
         "^SINKS:\s(?P<sink>\w+)\n"
         "(?P<data>" + "(^\d+\s\s{res}\s\s{res}".format(res=RE_SCIENTIFIC)
         + "\n)+)"
-        "^ENDPROP"),
-
+          "^ENDPROP"),
 }
 
 EM_CHARGE = 1.0095398470766666e-01
 IWASAKI_24C_PSEUDO = (
     "^STARTPROP\n"
-    #"^MASSES:.*\n"
-    #"^CHARGES:.*\n"
     "^MASSES:\s\s(?P<m1>{res})\s{{3}}(?P<m2>{res})".format(res=RE_SCIENTIFIC) + "\n"
     "^CHARGES:\s\s(?P<q1>{res})\s{{3}}(?P<q2>{res})".format(res=RE_SCIENTIFIC) + "\n"
     ".*\n"
-    #"\(meson\stotal\scharge\:\s{res}\)".format(res=RE_SCIENTIFIC) + "\n"
     "^SOURCE:\sGFWALL\n"
     "^SINKS:\sGAM_5\n"
     "(?P<data>" + "(^\d+\s\s{res}\s\s{res}".format(res=RE_SCIENTIFIC)
     + "\n)+)"
-    "^ENDPROP")
+      "^ENDPROP")
 
 IWASAKI_COMPILED_REGEX = re.compile(IWASAKI_24C_REGEX['data'], re.MULTILINE)
 IWASAKI_COMPILED_REGEX_PSEUDO = re.compile(IWASAKI_24C_PSEUDO, re.MULTILINE)
@@ -54,6 +50,7 @@ class Iwasaki24cCharged(Parser):
         emspect.data.1020
         """
         data = []
+        already_done = set()
         raw_data = file_name.read()
         fname = os.path.basename(file_name.name)
         m = re.match(IWASAKI_24C_REGEX['filename'], fname)
@@ -75,6 +72,7 @@ class Iwasaki24cCharged(Parser):
             else:
                 source = match['source']
                 sink = match['sink']
+
             charge_1 = int(round(float(match['q1']) / EM_CHARGE, 1))
             charge_2 = int(round(float(match['q2']) / EM_CHARGE, 1))
             mass_1 = float(match['m1'])
@@ -103,13 +101,19 @@ class Iwasaki24cCharged(Parser):
                    'charge_1': charge_1,
                    'charge_2': charge_2,
                    'config_number': config_number}
-            data.append(dic)
+
+            params = (source,
+                      sink,
+                      mass_1,
+                      mass_2,
+                      charge_1,
+                      charge_2,
+                      config_number)
+
+            if params not in already_done:
+                data.append(dic)
+                already_done.add(params)
         return data
-
-
-# class LECParser(Parser):
-#     def get_from_file(self, file_name):
-#         pass
 
 
 def populate_db():
