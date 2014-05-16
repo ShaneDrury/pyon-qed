@@ -2,6 +2,7 @@ import logging
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qed.settings")
 from django.conf import settings
+from django.db.models import Max
 logging.basicConfig(level=settings.LOGGING_LEVEL)
 import re
 from pyon.lib.io.formats import RE_SCIENTIFIC
@@ -154,30 +155,36 @@ class LECParser(Parser):
 
 
 def populate_db():
+    logging.debug("Adding 0.0042")
     parse_from_folder(os.path.join('data', '32c', 'IWASAKI+DSDR', 'ms0.045',
                                    'mu0.0042'), 0.0042)
 
 
 def parse_from_folder(folder, m_l):
     all_data = Iwasaki32cCharged(pseudo=True).get_from_folder(folder)
+    id_start = (ChargedMeson32c.objects.aggregate(Max('id'))['id__max'] or 0) + 1
+    bulk_mesons = []
     for d in all_data:
         if not (d['source'] == 'GAM_5' and d['sink'] == 'GAM_5'):
             continue
-        logging.debug("Processing {} {} {}".format((d['mass_1'], d['mass_2']),
-                                                   (d['charge_1'],
-                                                    d['charge_2']),
-                                                   d['config_number']))
+        # logging.debug("Processing {} {} {}".format((d['mass_1'], d['mass_2']),
+        #                                            (d['charge_1'],
+        #                                             d['charge_2']),
+        #                                            d['config_number']))
         re_dat = d.pop('data')
         im_dat = d.pop('im_data')
         time_slices = d.pop('time_slices')
         d['m_l'] = m_l
+        d['id'] = id_start
+        id_start += 1
         mes = ChargedMeson32c(**d)
         mes.save()
         bulk_list = [TimeSlice(meson=mes, t=t, re=real, im=im)
                      for t, real, im in zip(time_slices, re_dat, im_dat)]
         TimeSlice.objects.bulk_create(bulk_list)
+        bulk_mesons.append(mes)
+    ChargedMeson32c.objects.bulk_create(bulk_mesons)
     logging.debug("Done!")
 
 if __name__ == '__main__':
-
     populate_db()
