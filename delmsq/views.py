@@ -14,10 +14,11 @@ import numpy as np
 # pseudoscalar mesons
 ps_mesons = ChargedMeson32c.objects.filter(source='GAM_5', sink='GAM_5')
 
+
 @functools.lru_cache(maxsize=None)
-def charged_mesons():
+def get_charged_mesons(mesons):
     charged_hadrons = {}
-    charged = ps_mesons.exclude(charge_1=0, charge_2=0)
+    charged = mesons.exclude(charge_1=0, charge_2=0)
     already_done = set()
     for meson in charged:
         m1 = meson.mass_1
@@ -27,15 +28,20 @@ def charged_mesons():
         if (m1, m2, q1, q2) in already_done:
             continue
         logging.debug("Adding {} {}".format((m1, m2), (q1, q2)))
-        fd = []
+        fd = []  # filtered_data
+        qs = []  # list of the equivalent querysets
         for mm1, mm2, qq1, qq2 in equivalent_params(m1, m2, q1, q2):
             one_mass = charged.filter(mass_1=mm1, mass_2=mm2,
                                       charge_1=qq1, charge_2=qq2)
+            if not one_mass.exists():
+                continue
             already_done.add((mm1, mm2, qq1, qq2))
             # TODO aggregrate to do average?
             fd.append([[s.re for s in q.data.all()] for q in one_mass])
+            qs.append(one_mass)
         average_data = np.average(fd, axis=0)
-        config_numbers = [q.config_number for q in one_mass]
+        config_numbers = [q.config_number for q in qs[0]]
+
         had = PseudoscalarChargedMeson(
             average_data,
             masses=(m1, m2),
@@ -48,11 +54,12 @@ def charged_mesons():
         charged_hadrons[(m1, m2, q1, q2)] = had
     return charged_hadrons
 
+
 @functools.lru_cache(maxsize=None)
-def uncharged_mesons():
+def get_uncharged_mesons(mesons):
     uncharged_hadrons = {}
     already_done = set()
-    uncharged = ps_mesons.filter(charge_1=0, charge_2=0)
+    uncharged = mesons.filter(charge_1=0, charge_2=0)
     # TODO use F statements to speed it up?
 
     for meson in uncharged:
