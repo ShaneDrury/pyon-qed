@@ -13,10 +13,11 @@ class ChargedMeson24c(models.Model):
 
 
 class TimeSlice(models.Model):
-    t = models.IntegerField(db_index=True)
+    t = models.IntegerField()
     re = models.FloatField()
     im = models.FloatField()
-    meson = models.ForeignKey(ChargedMeson24c, related_name='data')
+    meson = models.ForeignKey(ChargedMeson24c, related_name='data',
+                              db_index=True)
 
 
 class PionLEC(models.Model):

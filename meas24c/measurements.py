@@ -2,7 +2,9 @@ from functools import partial
 import numpy as np
 from pyon.runner.measurement import Measurement
 from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
-from delmsq.views import get_charged_mesons, get_uncharged_mesons
+# from delmsq.views import get_charged_mesons, get_uncharged_mesons
+from delmsq.views import get_uncharged_mesons
+from meas24c.views import get_charged_mesons
 from meas24c.views import ps_mesons_005, ps_mesons_01, ps_mesons_02, \
     ps_mesons_03
 
@@ -14,9 +16,9 @@ fit_params_uncovariant = dict(fit_range=np.array(range(9, 32+1)),
                               covariant=False,
                               bounds=bnds)
 
-fit_params_covariant = fit_params_uncovariant
+fit_params_covariant = fit_params_uncovariant.copy()
 fit_params_covariant['covariant'] = True
-fit_params_correlated = fit_params_covariant
+fit_params_correlated = fit_params_covariant.copy()
 fit_params_correlated['correlated'] = True
 
 charged_005 = partial(get_charged_mesons, mesons=ps_mesons_005)

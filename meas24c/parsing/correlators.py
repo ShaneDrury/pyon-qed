@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 from django.db.models import Max
@@ -115,23 +116,23 @@ class Iwasaki24cCharged(Parser):
 
 def parse_correlators_from_folder(folder, m_l):
     all_data = Iwasaki24cCharged(pseudo=True).get_from_folder(folder)
-    id_start = (ChargedMeson24c.objects.aggregate(Max('id'))['id__max'] or 0) + 1
+    id_start = (ChargedMeson24c.objects.aggregate(Max('pk'))['pk__max'] or 0) + 1
     bulk_mesons = []
     for d in all_data:
         if not (d['source'] == 'GFWALL' and d['sink'] == 'GAM_5'):
             continue
-        # logging.debug("Processing {} {} {} {}".format((d['mass_1'], d['mass_2']),
-        #                                            (d['charge_1'],
-        #                                             d['charge_2']),
-        #                                            d['config_number'], id_start))
+        logging.debug("Processing {} {} {}".format((d['mass_1'], d['mass_2']),
+                                                   (d['charge_1'],
+                                                    d['charge_2']),
+                                                   d['config_number']))
         re_dat = d.pop('data')
         im_dat = d.pop('im_data')
         time_slices = d.pop('time_slices')
         d['m_l'] = m_l
-        d['id'] = id_start
+        d['pk'] = id_start
         id_start += 1
         mes = ChargedMeson24c(**d)
-        #mes.save()
+        mes.save()
         bulk_list = [TimeSlice(meson=mes, t=t, re=real, im=im)
                      for t, real, im in zip(time_slices, re_dat, im_dat)]
         TimeSlice.objects.bulk_create(bulk_list)

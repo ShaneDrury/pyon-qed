@@ -9,5 +9,6 @@ setup(
     author='srd1g10',
     author_email='',
     description='',
-    install_requires=['pyminuit', 'pyon'],
+    install_requires=['pyminuit', 'pyon',
+                      'django-redis-cache'],
 )

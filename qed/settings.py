@@ -8,6 +8,8 @@ LOGGING_LEVEL = logging.DEBUG
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, '../templates'),
 )
+DEBUG = False
+TEMPLATE_DEBUG = False
 ROOT_MEASUREMENTS = 'qed.measurements'
 
 # Django things
@@ -24,3 +26,9 @@ DATABASES = {
         'NAME': 'qed.db',
     }
 }
+# CACHES = {
+# 'default': {
+#         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+#         'LOCATION': '/tmp/qedcache',
+#     }
+# }
