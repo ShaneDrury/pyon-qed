@@ -24,12 +24,21 @@ def get_charged_mesons(mesons):
     """
     A new approach. Get all the data we will need at once and use python
     to filter this. This should avoid multiple round-trips.
+
+    TODO: get all the time slices at once. Filter on TimeSlice e.g.:
+        >>> TimeSlice.objects.filter(meson__in=list_of_pks)
     """
     charged_hadrons = {}
     already_done = set()
     charged = mesons.exclude(charge_1=0, charge_2=0)
 
     all_mesons = defaultdict(list)
+    list_of_pks = [m.pk for m in charged]
+    qs = TimeSlice.objects.all()
+    vals_filtered = (item for item in qs if item.meson in list_of_pks)
+    for v in vals_filtered:
+        print(v)
+    exit()
     for meson in charged:  # save all the data in a dict
         m1 = meson.mass_1
         m2 = meson.mass_2
@@ -38,12 +47,16 @@ def get_charged_mesons(mesons):
         cn = meson.config_number
         if (m1, m2, q1, q2, cn) in all_mesons:
             raise ValueError
+        #qs = meson.data.all()
+        qs = TimeSlice.objects.filter(meson=meson.pk)
         all_mesons[(m1, m2, q1, q2)].append({'config_number': cn,
-                                             'data': [s.re for s in meson.data.all()]})
+                                             'data': [s.re for s in qs]})
     for m1, m2, q1, q2 in list(all_mesons):
+        logging.debug("Adding {} {}".format((m1, m2), (q1, q2)))
         if (m1, m2, q1, q2) in already_done:
             continue
         fd = []  # filtered_data
+        conf_numbers = None
         for mm1, mm2, qq1, qq2 in equivalent_params(m1, m2, q1, q2):
             one_mass = all_mesons[(mm1, mm2, qq1, qq2)]
             already_done.add((mm1, mm2, qq1, qq2))
@@ -51,6 +64,8 @@ def get_charged_mesons(mesons):
                 continue
             fd.append([q['data'] for q in one_mass])
             conf_numbers = [q['config_number'] for q in one_mass]
+        if not conf_numbers:
+            raise ValueError("No matches")
         average_data = np.average(fd, axis=0)
         had = PseudoscalarChargedMeson(
             average_data,
@@ -62,7 +77,6 @@ def get_charged_mesons(mesons):
         had.fold()
         had.scale()
         charged_hadrons[(m1, m2, q1, q2)] = had
-    exit()
     return charged_hadrons
 
 # SLOWER

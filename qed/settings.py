@@ -8,7 +8,7 @@ LOGGING_LEVEL = logging.DEBUG
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, '../templates'),
 )
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = False
 ROOT_MEASUREMENTS = 'qed.measurements'
 
