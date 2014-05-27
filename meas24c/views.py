@@ -1,23 +1,17 @@
 # Create your views here.
 from collections import defaultdict
 import logging
-from django.utils import six
+from pprint import pprint
 from pyon.lib.meson import PseudoscalarChargedMeson
 from meas24c.models import ChargedMeson24c
 from delmsq.lib.statistics import equivalent_params
 import numpy as np
 
-ps_mesons_005 = ChargedMeson24c.objects(source='GFWALL', sink='GAM_5',
-                                        m_l=0.005)
-
-ps_mesons_01 = ChargedMeson24c.objects(source='GFWALL', sink='GAM_5',
-                                       m_l=0.01)
-
-ps_mesons_02 = ChargedMeson24c.objects(source='GFWALL', sink='GAM_5',
-                                       m_l=0.02)
-
-ps_mesons_03 = ChargedMeson24c.objects(source='GFWALL', sink='GAM_5',
-                                       m_l=0.03)
+ps_mesons_005 = ChargedMeson24c.objects(m_l=0.005, source='GFWALL',
+                                        sink='GAM_5')
+ps_mesons_01 = ChargedMeson24c.objects(m_l=0.01, source='GFWALL', sink='GAM_5')
+ps_mesons_02 = ChargedMeson24c.objects(m_l=0.02, source='GFWALL', sink='GAM_5')
+ps_mesons_03 = ChargedMeson24c.objects(m_l=0.03, source='GFWALL', sink='GAM_5')
 
 
 def get_charged_mesons(mesons):
@@ -29,7 +23,7 @@ def get_charged_mesons(mesons):
     charged = mesons(charge_1__ne=0, charge_2__ne=0).exclude("m_l")
     all_mesons = defaultdict(list)
     logging.debug("Getting all data")
-    for meson in charged:
+    for i, meson in enumerate(list(charged)):
         m1 = meson.mass_1
         m2 = meson.mass_2
         q1 = meson.charge_1
@@ -67,6 +61,7 @@ def get_charged_mesons(mesons):
         had.fold()
         had.scale()
         charged_hadrons[(m1, m2, q1, q2)] = had
+    exit()
     return charged_hadrons
 
 
