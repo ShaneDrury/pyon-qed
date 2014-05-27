@@ -39,3 +39,8 @@ class ChargedMeson24c(Document):
     charge_2 = IntField()
     config_number = IntField()
     data = ListField(EmbeddedDocumentField(TimeSlice))
+    meta = {
+        'allow_inheritance': True,
+        'index_background': True,
+        'indexes': [('+m_l', '+source', '+sink')]
+    }

@@ -115,14 +115,17 @@ class Iwasaki24cCharged(Parser):
 
 
 def parse_correlators_from_folder(folder, m_l):
+    logging.debug("Parsing from file")
     all_data = Iwasaki24cCharged(pseudo=True).get_from_folder(folder)
+    bulk_list = []
+    logging.debug("Creating objects")
     for d in all_data:
         if not (d['source'] == 'GFWALL' and d['sink'] == 'GAM_5'):
             continue
-        logging.debug("Processing {} {} {}".format((d['mass_1'], d['mass_2']),
-                                                   (d['charge_1'],
-                                                    d['charge_2']),
-                                                   d['config_number']))
+        # logging.debug("Processing {} {} {}".format((d['mass_1'], d['mass_2']),
+        #                                            (d['charge_1'],
+        #                                             d['charge_2']),
+        #                                            d['config_number']))
         re_dat = d.pop('data')
         im_dat = d.pop('im_data')
         time_slices = d.pop('time_slices')
@@ -133,3 +136,7 @@ def parse_correlators_from_folder(folder, m_l):
         d['data'] = time_slices
         mes = ChargedMeson24c(**d)
         mes.save()
+        #bulk_list.append()
+
+    # logging.debug("Saving")
+    # ChargedMeson24c.objects.insert(bulk_list)
