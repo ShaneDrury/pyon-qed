@@ -1,8 +1,7 @@
 from functools import partial
 import numpy as np
-from pyon.runner.measurement import Measurement
+from pyon.core.measurement import Measurement
 from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
-# from delmsq.views import get_charged_mesons, get_uncharged_mesons
 from delmsq.views import get_uncharged_mesons
 from meas24c.views import get_charged_mesons
 from meas24c.views import ps_mesons_005, ps_mesons_01, ps_mesons_02, \
@@ -33,10 +32,14 @@ uncharged_02 = partial(get_uncharged_mesons, mesons=ps_mesons_02)
 charged_03 = partial(get_charged_mesons, mesons=ps_mesons_03)
 uncharged_03 = partial(get_uncharged_mesons, mesons=ps_mesons_03)
 
+
+
 uncovariant_005 = Measurement(all_del_m_sq,
-                              (charged_005, uncharged_005,
-                               fit_params_uncovariant, fit_params_uncovariant),
-                              simulation_kwargs={'method': MinuitFitter})
+                              charged_hadrons=charged_005,
+                              uncharged_hadrons=uncharged_005,
+                              hadron1_kwargs=fit_params_uncovariant,
+                              hadron2_kwargs=fit_params_uncovariant,
+                              method=MinuitFitter)
 
 uncovariant_01 = Measurement(all_del_m_sq,
                              (charged_01, uncharged_01,
@@ -58,16 +61,16 @@ measurements = [
         'name': 'ml_0.005', 'measurement': uncovariant_005,
         'template_name' : 'delmsq/index.html'
     },
-    {
-        'name': 'ml_0.01', 'measurement': uncovariant_01,
-        'template_name' : 'delmsq/index.html'
-    },
-    {
-        'name': 'ml_0.02', 'measurement': uncovariant_02,
-        'template_name' : 'delmsq/index.html'
-    },
-    {
-        'name': 'ml_0.03', 'measurement': uncovariant_03,
-        'template_name' : 'delmsq/index.html'
-    },
-    ]
+    # {
+    #     'name': 'ml_0.01', 'measurement': uncovariant_01,
+    #     'template_name' : 'delmsq/index.html'
+    # },
+    # {
+    #     'name': 'ml_0.02', 'measurement': uncovariant_02,
+    #     'template_name' : 'delmsq/index.html'
+    # },
+    # {
+    #     'name': 'ml_0.03', 'measurement': uncovariant_03,
+    #     'template_name' : 'delmsq/index.html'
+    # },
+]

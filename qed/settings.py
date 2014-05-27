@@ -11,6 +11,7 @@ TEMPLATE_DIRS = (
 DEBUG = False
 TEMPLATE_DEBUG = False
 ROOT_MEASUREMENTS = 'qed.measurements'
+ROOT_PARSERS = 'meas24c.parsers'
 
 # Django things
 SECRET_KEY = 'foo'

@@ -1,6 +1,6 @@
 from functools import partial
 import numpy as np
-from pyon.runner.measurement import Measurement
+from pyon.core.measurement import Measurement
 from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
 from delmsq.views import get_charged_mesons, get_uncharged_mesons, ps_mesons
 

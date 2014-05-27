@@ -62,7 +62,6 @@ def get_charged_mesons(mesons):
         had.fold()
         had.scale()
         charged_hadrons[(m1, m2, q1, q2)] = had
-    exit()
     return charged_hadrons
 
 # SLOWER
