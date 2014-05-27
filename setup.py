@@ -10,5 +10,5 @@ setup(
     author_email='',
     description='',
     install_requires=['pyminuit', 'pyon',
-                      'django-redis-cache'],
+                      'mongoengine'],
 )

@@ -6,7 +6,7 @@ from meas24c.parsing.lec import parse_lecs_from_folder
 import logging
 logging.basicConfig(level=settings.LOGGING_LEVEL)
 
-
+parsers = {}  # TODO: fill this in
 def correlators():
     logging.debug("Adding 0.02")
     parse_correlators_from_folder(os.path.join('data', '24c', 'correlators',

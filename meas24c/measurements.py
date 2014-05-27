@@ -1,8 +1,7 @@
 from functools import partial
 import numpy as np
-from pyon.runner.measurement import Measurement
+from pyon.core.measurement import Measurement
 from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
-# from delmsq.views import get_charged_mesons, get_uncharged_mesons
 from delmsq.views import get_uncharged_mesons
 from meas24c.views import get_charged_mesons
 from meas24c.views import ps_mesons_005, ps_mesons_01, ps_mesons_02, \
@@ -33,26 +32,40 @@ uncharged_02 = partial(get_uncharged_mesons, mesons=ps_mesons_02)
 charged_03 = partial(get_charged_mesons, mesons=ps_mesons_03)
 uncharged_03 = partial(get_uncharged_mesons, mesons=ps_mesons_03)
 
+# meas1 = Measurement(all_del_m_sq,
+#                     uncharged_hadrons=uncharged_view,
+#                     charged_hadrons=charged_view,
+#                     hadron1_kwargs=fit_params,
+#                     hadron2_kwargs=fit_params,
+#                     method=MinuitFitter)
+
 uncovariant_005 = Measurement(all_del_m_sq,
-                              (charged_005, uncharged_005,
-                               fit_params_uncovariant, fit_params_uncovariant),
-                              simulation_kwargs={'method': MinuitFitter})
+                              uncharged_hadrons=uncharged_005,
+                              charged_hadrons=charged_005,
+                              hadron1_kwargs=fit_params_uncovariant,
+                              hadron2_kwargs=fit_params_uncovariant,
+                              method=MinuitFitter)
 
 uncovariant_01 = Measurement(all_del_m_sq,
-                             (charged_01, uncharged_01,
-                              fit_params_uncovariant, fit_params_uncovariant),
-                             simulation_kwargs={'method': MinuitFitter})
+                             uncharged_hadrons=uncharged_01,
+                             charged_hadrons=charged_01,
+                             hadron1_kwargs=fit_params_uncovariant,
+                             hadron2_kwargs=fit_params_uncovariant,
+                             method=MinuitFitter)
 
 uncovariant_02 = Measurement(all_del_m_sq,
-                             (charged_02, uncharged_02,
-                              fit_params_uncovariant, fit_params_uncovariant),
-                             simulation_kwargs={'method': MinuitFitter})
+                             uncharged_hadrons=uncharged_02,
+                             charged_hadrons=charged_02,
+                             hadron1_kwargs=fit_params_uncovariant,
+                             hadron2_kwargs=fit_params_uncovariant,
+                             method=MinuitFitter)
 
 uncovariant_03 = Measurement(all_del_m_sq,
-                             (charged_03, uncharged_03,
-                              fit_params_uncovariant, fit_params_uncovariant),
-                             simulation_kwargs={'method': MinuitFitter})
-
+                             uncharged_hadrons=uncharged_03,
+                             charged_hadrons=charged_03,
+                             hadron1_kwargs=fit_params_uncovariant,
+                             hadron2_kwargs=fit_params_uncovariant,
+                             method=MinuitFitter)
 measurements = [
     {
         'name': 'ml_0.005', 'measurement': uncovariant_005,

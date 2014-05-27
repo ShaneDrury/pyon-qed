@@ -33,12 +33,9 @@ def get_charged_mesons(mesons):
     charged = mesons.exclude(charge_1=0, charge_2=0)
 
     all_mesons = defaultdict(list)
-    list_of_pks = [m.pk for m in charged]
-    qs = TimeSlice.objects.all()
-    vals_filtered = (item for item in qs if item.meson in list_of_pks)
-    for v in vals_filtered:
-        print(v)
-    exit()
+    #list_of_pks = [m.pk for m in charged]
+    #qs = TimeSlice.objects.all()
+    #vals_filtered = (item for item in qs if item.meson in list_of_pks)
     for meson in charged:  # save all the data in a dict
         m1 = meson.mass_1
         m2 = meson.mass_2
