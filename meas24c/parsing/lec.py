@@ -60,4 +60,4 @@ class PionLECParser(Parser):
 def parse_lecs_from_folder(folder):
     all_data = PionLECParser().get_from_folder(folder)
     bulk_list = [PionLEC(**d) for d in all_data]
-    PionLEC.objects.bulk_create(bulk_list)
+    PionLEC.objects.insert(bulk_list)

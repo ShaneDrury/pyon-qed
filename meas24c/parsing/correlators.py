@@ -13,24 +13,24 @@ IWASAKI_24C_REGEX = {
     'data': (
         "^STARTPROP\n"
         "^MASSES:\s\s(?P<m1>{res})\s{{3}}(?P<m2>{res})".format(res=RE_SCIENTIFIC) + "\n"
-        "^CHARGES:\s\s(?P<q1>{res})\s{{3}}(?P<q2>{res})\n"
-        "(meson\stotal\scharge:\s{res})".format(res=RE_SCIENTIFIC) + "\n"
-        "^SOURCE:\s(?P<source>\w+)\n"
-        "^SINKS:\s(?P<sink>\w+)\n"
-        "(?P<data>" + "(^\d+\s\s{res}\s\s{res}".format(res=RE_SCIENTIFIC)
+                                                                                    "^CHARGES:\s\s(?P<q1>{res})\s{{3}}(?P<q2>{res})\n"
+                                                                                    "(meson\stotal\scharge:\s{res})".format(res=RE_SCIENTIFIC) + "\n"
+                                                                                                                                                 "^SOURCE:\s(?P<source>\w+)\n"
+                                                                                                                                                 "^SINKS:\s(?P<sink>\w+)\n"
+                                                                                                                                                 "(?P<data>" + "(^\d+\s\s{res}\s\s{res}".format(res=RE_SCIENTIFIC)
         + "\n)+)"
           "^ENDPROP"),
-}
+    }
 
 EM_CHARGE = 1.0095398470766666e-01
 IWASAKI_24C_PSEUDO = (
     "^STARTPROP\n"
     "^MASSES:\s\s(?P<m1>{res})\s{{3}}(?P<m2>{res})".format(res=RE_SCIENTIFIC) + "\n"
-    "^CHARGES:\s\s(?P<q1>{res})\s{{3}}(?P<q2>{res})".format(res=RE_SCIENTIFIC) + "\n"
-    ".*\n"
-    "^SOURCE:\sGFWALL\n"
-    "^SINKS:\sGAM_5\n"
-    "(?P<data>" + "(^\d+\s\s{res}\s\s{res}".format(res=RE_SCIENTIFIC)
+                                                                                "^CHARGES:\s\s(?P<q1>{res})\s{{3}}(?P<q2>{res})".format(res=RE_SCIENTIFIC) + "\n"
+                                                                                                                                                             ".*\n"
+                                                                                                                                                             "^SOURCE:\sGFWALL\n"
+                                                                                                                                                             "^SINKS:\sGAM_5\n"
+                                                                                                                                                             "(?P<data>" + "(^\d+\s\s{res}\s\s{res}".format(res=RE_SCIENTIFIC)
     + "\n)+)"
       "^ENDPROP")
 
@@ -116,8 +116,6 @@ class Iwasaki24cCharged(Parser):
 
 def parse_correlators_from_folder(folder, m_l):
     all_data = Iwasaki24cCharged(pseudo=True).get_from_folder(folder)
-    id_start = (ChargedMeson24c.objects.aggregate(Max('pk'))['pk__max'] or 0) + 1
-    bulk_mesons = []
     for d in all_data:
         if not (d['source'] == 'GFWALL' and d['sink'] == 'GAM_5'):
             continue
@@ -129,12 +127,9 @@ def parse_correlators_from_folder(folder, m_l):
         im_dat = d.pop('im_data')
         time_slices = d.pop('time_slices')
         d['m_l'] = m_l
-        d['pk'] = id_start
-        id_start += 1
+
+        time_slices = [TimeSlice(t=t, re=real, im=im)
+                       for t, real, im in zip(time_slices, re_dat, im_dat)]
+        d['data'] = time_slices
         mes = ChargedMeson24c(**d)
         mes.save()
-        bulk_list = [TimeSlice(meson=mes, t=t, re=real, im=im)
-                     for t, real, im in zip(time_slices, re_dat, im_dat)]
-        TimeSlice.objects.bulk_create(bulk_list)
-        bulk_mesons.append(mes)
-    ChargedMeson24c.objects.bulk_create(bulk_mesons)
