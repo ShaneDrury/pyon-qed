@@ -31,40 +31,34 @@ uncharged_02 = partial(get_uncharged_mesons, mesons=ps_mesons_02)
 charged_03 = partial(get_charged_mesons, mesons=ps_mesons_03)
 uncharged_03 = partial(get_uncharged_mesons, mesons=ps_mesons_03)
 
-# meas1 = Measurement(all_del_m_sq,
-#                     uncharged_hadrons=uncharged_view,
-#                     charged_hadrons=charged_view,
-#                     hadron1_kwargs=fit_params,
-#                     hadron2_kwargs=fit_params,
-#                     method=MinuitFitter)
 
-uncovariant_005 = Measurement(all_del_m_sq,
-                              uncharged_hadrons=uncharged_005,
-                              charged_hadrons=charged_005,
-                              hadron1_kwargs=fit_params_uncovariant,
-                              hadron2_kwargs=fit_params_uncovariant,
-                              method=MinuitFitter)
+uncovariant_005 = partial(all_del_m_sq,
+                          uncharged_hadrons=uncharged_005,
+                          charged_hadrons=charged_005,
+                          hadron1_kwargs=fit_params_uncovariant,
+                          hadron2_kwargs=fit_params_uncovariant,
+                          method=MinuitFitter)
 
-uncovariant_01 = Measurement(all_del_m_sq,
-                             uncharged_hadrons=uncharged_01,
-                             charged_hadrons=charged_01,
-                             hadron1_kwargs=fit_params_uncovariant,
-                             hadron2_kwargs=fit_params_uncovariant,
-                             method=MinuitFitter)
+uncovariant_01 = partial(all_del_m_sq,
+                         uncharged_hadrons=uncharged_01,
+                         charged_hadrons=charged_01,
+                         hadron1_kwargs=fit_params_uncovariant,
+                         hadron2_kwargs=fit_params_uncovariant,
+                         method=MinuitFitter)
 
-uncovariant_02 = Measurement(all_del_m_sq,
-                             uncharged_hadrons=uncharged_02,
-                             charged_hadrons=charged_02,
-                             hadron1_kwargs=fit_params_uncovariant,
-                             hadron2_kwargs=fit_params_uncovariant,
-                             method=MinuitFitter)
+uncovariant_02 = partial(all_del_m_sq,
+                         uncharged_hadrons=uncharged_02,
+                         charged_hadrons=charged_02,
+                         hadron1_kwargs=fit_params_uncovariant,
+                         hadron2_kwargs=fit_params_uncovariant,
+                         method=MinuitFitter)
 
-uncovariant_03 = Measurement(all_del_m_sq,
-                             uncharged_hadrons=uncharged_03,
-                             charged_hadrons=charged_03,
-                             hadron1_kwargs=fit_params_uncovariant,
-                             hadron2_kwargs=fit_params_uncovariant,
-                             method=MinuitFitter)
+uncovariant_03 = partial(all_del_m_sq,
+                         uncharged_hadrons=uncharged_03,
+                         charged_hadrons=charged_03,
+                         hadron1_kwargs=fit_params_uncovariant,
+                         hadron2_kwargs=fit_params_uncovariant,
+                         method=MinuitFitter)
 measurements = [
     {
         'name': 'ml_0.005', 'measurement': uncovariant_005,

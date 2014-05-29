@@ -1,4 +1,4 @@
-from delmsq.measurements import meas1
+# from delmsq.measurements import meas1
 
 __author__ = 'srd1g10'
 measurements = [
