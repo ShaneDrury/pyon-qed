@@ -66,18 +66,18 @@ uncovariant_03 = Measurement(all_del_m_sq,
                              hadron2_kwargs=fit_params_uncovariant,
                              method=MinuitFitter)
 measurements = [
-    {
-        'name': 'ml_0.005', 'measurement': uncovariant_005,
-        'template_name' : 'delmsq/index.html'
-    },
+    # {
+    #     'name': 'ml_0.005', 'measurement': uncovariant_005,
+    #     'template_name' : 'delmsq/index.html'
+    # },
     # {
     #     'name': 'ml_0.01', 'measurement': uncovariant_01,
     #     'template_name' : 'delmsq/index.html'
     # },
-    # {
-    #     'name': 'ml_0.02', 'measurement': uncovariant_02,
-    #     'template_name' : 'delmsq/index.html'
-    # },
+    {
+        'name': 'ml_0.02', 'measurement': uncovariant_02,
+        'template_name' : 'delmsq/index.html'
+    },
     # {
     #     'name': 'ml_0.03', 'measurement': uncovariant_03,
     #     'template_name' : 'delmsq/index.html'

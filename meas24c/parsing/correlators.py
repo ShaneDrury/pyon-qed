@@ -1,10 +1,11 @@
+from collections import defaultdict
 import logging
 import os
 import re
 from django.db.models import Max
 from pyon.lib.io.formats import RE_SCIENTIFIC
 from pyon.lib.io.parsers import Parser
-from meas24c.models import ChargedMeson24c, TimeSlice
+from meas24c.models import ChargedMeson24c, TimeSlice, Correlator
 
 __author__ = 'srd1g10'
 
@@ -117,26 +118,34 @@ class Iwasaki24cCharged(Parser):
 def parse_correlators_from_folder(folder, m_l):
     logging.debug("Parsing from file")
     all_data = Iwasaki24cCharged(pseudo=True).get_from_folder(folder)
-    bulk_list = []
     logging.debug("Creating objects")
+    mesons = defaultdict(list)
     for d in all_data:
         if not (d['source'] == 'GFWALL' and d['sink'] == 'GAM_5'):
             continue
-        # logging.debug("Processing {} {} {}".format((d['mass_1'], d['mass_2']),
-        #                                            (d['charge_1'],
-        #                                             d['charge_2']),
-        #                                            d['config_number']))
+        logging.debug("Processing {} {} {}".format((d['mass_1'], d['mass_2']),
+                                                   (d['charge_1'],
+                                                    d['charge_2']),
+                                                   d['config_number']))
+
         re_dat = d.pop('data')
-        im_dat = d.pop('im_data')
+        d.pop('im_data')
+
         time_slices = d.pop('time_slices')
         d['m_l'] = m_l
 
-        time_slices = [TimeSlice(t=t, re=real, im=im)
-                       for t, real, im in zip(time_slices, re_dat, im_dat)]
-        d['data'] = time_slices
-        mes = ChargedMeson24c(**d)
-        mes.save()
-        #bulk_list.append()
+        time_slices = [TimeSlice(t=t, re=real)
+                       for t, real in zip(time_slices, re_dat)]
+        key = (m_l, d['source'], d['sink'], d['mass_1'],
+               d['mass_2'], d['charge_1'], d['charge_2'])
+        mesons[key].append({'config_number': d['config_number'],
+                            'data': time_slices})
 
-    # logging.debug("Saving")
-    # ChargedMeson24c.objects.insert(bulk_list)
+    for k, v in mesons.items():
+        m_l, source, sink, mass_1, mass_2, charge_1, charge_2 = k
+        correlators = [Correlator(**t) for t in v]
+        mes = ChargedMeson24c(source=source, sink=sink, m_l=m_l,
+                              mass_1=mass_1, mass_2=mass_2,
+                              charge_1=charge_1, charge_2=charge_2,
+                              correlators=correlators)
+        mes.save()

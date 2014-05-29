@@ -20,20 +20,23 @@ def get_charged_mesons(mesons):
     """
     charged_hadrons = {}
     already_done = set()
-    charged = mesons(charge_1__ne=0, charge_2__ne=0).exclude("m_l")
-    all_mesons = defaultdict(list)
+    qs = mesons(charge_1__ne=0, charge_2__ne=0).exclude("m_l")
+    all_mesons = {}
     logging.debug("Getting all data")
-    for i, meson in enumerate(list(charged)):
+    for meson in qs:
         m1 = meson.mass_1
         m2 = meson.mass_2
         q1 = meson.charge_1
         q2 = meson.charge_2
-        cn = meson.config_number
-        logging.debug("Adding {} {} {}".format((m1, m2), (q1, q2), cn))
-        if (m1, m2, q1, q2, cn) in all_mesons:
+        correlators = meson.correlators
+        conf_numbers = [c.config_number for c in correlators]
+        all_data = [[s.re for s in c.data] for c in correlators]
+        logging.debug("Adding {} {}".format((m1, m2), (q1, q2)))
+        if (m1, m2, q1, q2) in all_mesons:
             raise ValueError
-        all_mesons[(m1, m2, q1, q2)].append({'config_number': cn,
-                                             'data': [s.re for s in meson.data]})
+        all_mesons[(m1, m2, q1, q2)] = [{'config_number': cn, 'data': data}
+                                        for cn, data in
+                                        zip(conf_numbers, all_data)]
     logging.debug("Creating objects")
     for m1, m2, q1, q2 in list(all_mesons):
         logging.debug("Adding {} {}".format((m1, m2), (q1, q2)))
@@ -42,7 +45,10 @@ def get_charged_mesons(mesons):
         fd = []  # filtered_data
         conf_numbers = None
         for mm1, mm2, qq1, qq2 in equivalent_params(m1, m2, q1, q2):
-            one_mass = all_mesons[(mm1, mm2, qq1, qq2)]
+            try:
+                one_mass = all_mesons[(mm1, mm2, qq1, qq2)]
+            except KeyError:
+                continue
             already_done.add((mm1, mm2, qq1, qq2))
             if len(one_mass) == 0:
                 continue
@@ -75,12 +81,14 @@ def get_uncharged_mesons(mesons):
         m2 = meson.mass_2
         if (m1, m2) in already_done:
             continue
-        one_mass = uncharged(mass_1=m1, mass_2=m2)
+        #one_mass = uncharged(mass_1=m1, mass_2=m2)
 
         already_done.add((m1, m2))
         logging.debug("Adding {}".format((m1, m2)))
-        fd = [[s.re for s in q.data] for q in one_mass]
-        config_numbers = [q.config_number for q in one_mass]
+        # fd = [[s.re for s in q.data] for q in one_mass]
+        # config_numbers = [q.config_number for q in one_mass]
+        config_numbers = [c.config_number for c in meson.correlators]
+        fd = [[s.re for s in c.data] for c in meson.correlators]
         had = PseudoscalarChargedMeson(
             fd,
             masses=(m1, m2),
