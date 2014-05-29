@@ -2,7 +2,7 @@ import logging
 import minuit
 from pyon.lib.fitting import Fitter, fit_hadron, FitParams
 from pyon.lib.resampling import Jackknife
-from delmsq.lib.fitfunc import make_chi_sq
+from delmsq.lib.fitfunc import make_chi_sq, make_chi_sq_covar
 
 
 class MinuitFitter(Fitter):
@@ -17,6 +17,11 @@ class MinuitFitter(Fitter):
     def _generate_chi_sq_uncovariant(data, errors, fit_range, fit_func):
         return make_chi_sq(data, errors, fit_range)
         #return GenericChi2(data, errors, fit_range, fit_func)
+
+    @staticmethod
+    def _generate_chi_sq_covariant(data, inverse_covariance, fit_range,
+                                   fit_func):
+        return make_chi_sq_covar(data, inverse_covariance, fit_range)
 
 
 def del_m_sq(m1, m2):
