@@ -1,7 +1,6 @@
 from functools import partial
 import numpy as np
-#from pyon.runner.measurement import Measurement
-from pyon.core.measurement import Measurement
+from pyon.runner.measurement import Measurement
 from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
 from delmsq.views import get_charged_mesons, get_uncharged_mesons, ps_mesons
 
@@ -17,11 +16,8 @@ charged_view = partial(get_charged_mesons, mesons=ps_mesons)
 uncharged_view = partial(get_uncharged_mesons, mesons=ps_mesons)
 
 meas1 = Measurement(all_del_m_sq,
-                    uncharged_hadrons=uncharged_view,
-                    charged_hadrons=charged_view,
-                    hadron1_kwargs=fit_params,
-                    hadron2_kwargs=fit_params,
-                    method=MinuitFitter)
+                    (charged_view, uncharged_view, fit_params, fit_params),
+                    simulation_kwargs={'method': MinuitFitter})
 
 measurements = [
     {
