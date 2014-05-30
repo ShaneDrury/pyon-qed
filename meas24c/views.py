@@ -27,17 +27,19 @@ def get_charged_mesons(mesons):
     """
     charged_hadrons = {}
     already_done = set()
-    charged = mesons.exclude(charge_1=0, charge_2=0).iterator()
-
-    all_mesons = defaultdict(list)
-    for meson in charged:  # save all the data in a dict
+    qs = mesons(charge_1__ne=0, charge_2__ne=0).exclude("m_l")
+    all_mesons = {}
+    logging.debug("Getting all data")
+    for meson in qs:
         m1 = meson.mass_1
         m2 = meson.mass_2
         q1 = meson.charge_1
         q2 = meson.charge_2
-        cn = meson.config_number
-        # logging.debug("Adding {} {} {}".format((m1, m2), (q1, q2), cn))
-        if (m1, m2, q1, q2, cn) in all_mesons:
+        correlators = meson.correlators
+        conf_numbers = [c.config_number for c in correlators]
+        all_data = [[s.re for s in c.data] for c in correlators]
+        logging.debug("Adding {} {}".format((m1, m2), (q1, q2)))
+        if (m1, m2, q1, q2) in all_mesons:
             raise ValueError
         all_mesons[(m1, m2, q1, q2)].append({'config_number': cn,
                                              'data': [s.re for s in meson.data.all()]})

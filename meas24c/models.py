@@ -1,42 +1,57 @@
-from django.db import models
+from mongoengine import EmbeddedDocument, IntField, FloatField, Document, \
+    StringField, EmbeddedDocumentField, ListField
 
 
-class ChargedMeson24c(models.Model):
-    source = models.CharField(max_length=20)
-    sink = models.CharField(max_length=20)
-    m_l = models.FloatField()  # light sea mass
-    mass_1 = models.FloatField()
-    mass_2 = models.FloatField()
-    charge_1 = models.IntegerField()
-    charge_2 = models.IntegerField()
-    config_number = models.IntegerField(db_index=True)
+class PionLEC(Document):
+    LS = FloatField()
+    B0 = FloatField()
+    F0 = FloatField()
+    L64 = FloatField()
+    L85 = FloatField()
+    L4 = FloatField()
+    L5 = FloatField()
+    m_res = FloatField()
+    miu = FloatField()
+    config_number = IntField()
 
 
-class TimeSlice(models.Model):
-    t = models.IntegerField()
-    re = models.FloatField()
-    im = models.FloatField()
-    meson = models.ForeignKey(ChargedMeson24c, related_name='data',
-                              db_index=True)
+class KaonLEC(Document):
+    M2 = FloatField()
+    A3 = FloatField()
+    A4 = FloatField()
+    delta_m_res = FloatField()
+    config_number = IntField()
 
 
-class PionLEC(models.Model):
-    LS = models.FloatField()
-    B0 = models.FloatField()
-    F0 = models.FloatField()
-    L64 = models.FloatField()
-    L85 = models.FloatField()
-    L4 = models.FloatField()
-    L5 = models.FloatField()
-    m_res = models.FloatField()
-    miu = models.FloatField()
-    config_number = models.IntegerField(db_index=True)
+class TimeSlice(EmbeddedDocument):
+    t = IntField()
+    re = FloatField()
+    #im = FloatField()  # don't actually need this
 
 
-class KaonLEC(models.Model):
-    M2 = models.FloatField()
-    A3 = models.FloatField()
-    A4 = models.FloatField()
-    delta_m_res = models.FloatField()
-    config_number = models.IntegerField(db_index=True)
+class Correlator(EmbeddedDocument):
+    """
+    A Correlator is a collection of time slices for one config number
+    """
+    config_number = IntField()
+    data = ListField(EmbeddedDocumentField(TimeSlice))
 
+
+class ChargedMeson24c(Document):
+    """
+    A Meson is a collection of Correlators and meta data
+    """
+    source = StringField(max_length=20)
+    sink = StringField(max_length=20)
+    m_l = FloatField()  # light sea mass
+    mass_1 = FloatField()
+    mass_2 = FloatField()
+    charge_1 = IntField()
+    charge_2 = IntField()
+    correlators = ListField(EmbeddedDocumentField(Correlator))
+
+    meta = {
+        'allow_inheritance': True,
+        'index_background': True,
+        'indexes': [('+m_l', '+source', '+sink')]
+    }
