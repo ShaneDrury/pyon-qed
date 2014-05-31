@@ -20,6 +20,8 @@ fit_params_covariant['covariant'] = True
 fit_params_correlated = fit_params_covariant.copy()
 fit_params_correlated['correlated'] = True
 
+#  TODO: Maybe make this into a loop
+
 
 @cache_data()
 def charged_005():
@@ -30,6 +32,7 @@ def charged_005():
 def uncharged_005():
     return partial(get_uncharged_mesons, mesons=ps_mesons_005)
 
+
 @cache_data()
 def charged_01():
     return partial(get_charged_mesons, mesons=ps_mesons_01)
@@ -39,6 +42,7 @@ def charged_01():
 def uncharged_01():
     return partial(get_uncharged_mesons, mesons=ps_mesons_01)
 
+
 @cache_data()
 def charged_02():
     return partial(get_charged_mesons, mesons=ps_mesons_02)
@@ -47,6 +51,7 @@ def charged_02():
 @cache_data()
 def uncharged_02():
     return partial(get_uncharged_mesons, mesons=ps_mesons_02)
+
 
 @cache_data()
 def charged_03():
