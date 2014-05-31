@@ -1,6 +1,6 @@
 from functools import partial
 import numpy as np
-from pyon.core.cache import CachedData
+from pyon.core.cache import CachedData, cache_data
 from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
 from meas24c.views import get_charged_mesons, get_uncharged_mesons
 from meas24c.views import ps_mesons_005, ps_mesons_01, ps_mesons_02, \
@@ -18,25 +18,41 @@ fit_params_correlated = fit_params_covariant.copy()
 fit_params_correlated['correlated'] = True
 
 
-charged_005 = CachedData(partial(get_charged_mesons, mesons=ps_mesons_005),
-                         'charged_005')
-uncharged_005 = CachedData(partial(get_uncharged_mesons, mesons=ps_mesons_005),
-                           'uncharged_005')
+@cache_data()
+def charged_005():
+    return partial(get_charged_mesons, mesons=ps_mesons_005)
 
-charged_01 = CachedData(partial(get_charged_mesons, mesons=ps_mesons_01),
-                        'charged_01')
-uncharged_01 = CachedData(partial(get_uncharged_mesons, mesons=ps_mesons_01),
-                          'uncharged_01')
 
-charged_02 = CachedData(partial(get_charged_mesons, mesons=ps_mesons_02),
-                        'charged_02')
-uncharged_02 = CachedData(partial(get_uncharged_mesons, mesons=ps_mesons_02),
-                          'uncharged_02')
+@cache_data()
+def uncharged_005():
+    return partial(get_uncharged_mesons, mesons=ps_mesons_005)
 
-charged_03 = CachedData(partial(get_charged_mesons, mesons=ps_mesons_03),
-                        'charged_03')
-uncharged_03 = CachedData(partial(get_uncharged_mesons, mesons=ps_mesons_03),
-                          'uncharged_03')
+@cache_data()
+def charged_01():
+    return partial(get_charged_mesons, mesons=ps_mesons_01)
+
+
+@cache_data()
+def uncharged_01():
+    return partial(get_uncharged_mesons, mesons=ps_mesons_01)
+
+@cache_data()
+def charged_02():
+    return partial(get_charged_mesons, mesons=ps_mesons_02)
+
+
+@cache_data()
+def uncharged_02():
+    return partial(get_uncharged_mesons, mesons=ps_mesons_02)
+
+@cache_data()
+def charged_03():
+    return partial(get_charged_mesons, mesons=ps_mesons_03)
+
+
+@cache_data()
+def uncharged_03():
+    return partial(get_uncharged_mesons, mesons=ps_mesons_03)
 
 uncovariant_func = partial(all_del_m_sq,
                            hadron1_kwargs=fit_params_uncovariant,

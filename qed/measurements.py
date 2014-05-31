@@ -1,6 +1,3 @@
-# from delmsq.measurements import meas1
-
-__author__ = 'srd1g10'
 measurements = [
     # {
     #     #'name': '0042', 'measurement': 'delmsq.measurements',
