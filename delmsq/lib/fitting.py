@@ -2,6 +2,7 @@ import inspect
 import logging
 import minuit
 from pyon.lib.fitting import Fitter, fit_hadron, FitParams
+from pyon.lib.meson import PseudoscalarChargedMeson
 from pyon.lib.resampling import Jackknife
 from delmsq.lib.fitfunc import make_chi_sq, make_chi_sq_covar
 
@@ -71,10 +72,30 @@ def all_del_m_sq(charged_hadrons,
     already_fit = {}
     charged = charged_hadrons()
     uncharged = uncharged_hadrons()
-    for k, ch in charged.items():
-        m1, m2, q1, q2 = k
-        unch = uncharged[(m1, m2)]
 
+    for k, v in charged.items():
+        m1, m2, q1, q2 = k
+        ch = PseudoscalarChargedMeson(
+            v['data'],
+            masses=(m1, m2),
+            charges=(q1, q2),
+            config_numbers=v['config_numbers']
+        )
+        ch.sort()
+        ch.fold()
+        ch.scale()
+
+
+        unch_v = uncharged[(m1, m2)]
+        unch = PseudoscalarChargedMeson(
+            unch_v['data'],
+            masses=(m1, m2),
+            charges=(0, 0),
+            config_numbers=unch_v['config_numbers']
+        )
+        unch.sort()
+        unch.fold()
+        unch.scale()
         if k not in already_fit:
             fp1 = fit_hadron(ch, method=method, **hadron1_kwargs)
             already_fit[k] = fp1

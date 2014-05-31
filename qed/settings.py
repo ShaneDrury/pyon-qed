@@ -34,12 +34,21 @@ DATABASES = {
 #         'NAME': 'qed.db',
 #     }
 # }
+
+
 CACHES = {
-'default': {
+    'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': '/tmp/qedcache',
-    }
+        }
 }
+
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         'LOCATION': '127.0.0.1:11211',
+#     }
+# }
 
 
 SESSION_ENGINE = 'mongoengine.django.sessions'  # optional

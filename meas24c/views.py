@@ -21,6 +21,7 @@ def all_el_equal(lst):
     """
     return lst[1:] == lst[:-1]
 
+
 def get_charged_mesons(mesons):
     """
     A new approach. Get all the data we will need at once and use python
@@ -64,16 +65,9 @@ def get_charged_mesons(mesons):
             raise ValueError("Averaging over non-identical "
                              "configuration numbers")
         average_data = np.average(fd, axis=0)
-        had = PseudoscalarChargedMeson(
-            average_data,
-            masses=(m1, m2),
-            charges=(q1, q2),
-            config_numbers=all_conf_numbers[0]
-        )
-        had.sort()
-        had.fold()
-        had.scale()
-        charged_hadrons[(m1, m2, q1, q2)] = had
+
+        charged_hadrons[(m1, m2, q1, q2)] = {'data': average_data,
+                                             'config_numbers': all_conf_numbers[0]}
     return charged_hadrons
 
 
@@ -93,15 +87,7 @@ def get_uncharged_mesons(mesons):
         conf_numbers = [c.config_number for c in correlators]
         all_data = [[s.re for s in c.data] for c in correlators]
         logging.debug("Adding {}".format((m1, m2)))
-        had = PseudoscalarChargedMeson(
-            all_data,
-            masses=(m1, m2),
-            charges=(0, 0),
-            config_numbers=conf_numbers
-        )
-        had.sort()
-        had.fold()
-        had.scale()
-        uncharged_hadrons[(m1, m2)] = had
+        uncharged_hadrons[(m1, m2)] = {'data': all_data,
+                                       'config_numbers': conf_numbers}
     return uncharged_hadrons
 
