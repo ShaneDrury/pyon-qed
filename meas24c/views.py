@@ -21,7 +21,6 @@ def all_el_equal(lst):
     """
     return lst[1:] == lst[:-1]
 
-
 def get_charged_mesons(mesons):
     """
     A new approach. Get all the data we will need at once and use python

@@ -1,3 +1,4 @@
+import inspect
 import logging
 import minuit
 from pyon.lib.fitting import Fitter, fit_hadron, FitParams

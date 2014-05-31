@@ -1,5 +1,6 @@
 import logging
 import os
+import mongoengine
 
 PROJECT_NAME = 'QED'
 PROJECT_ROOT = os.path.normpath(os.path.dirname(__file__))
@@ -33,20 +34,15 @@ DATABASES = {
 #         'NAME': 'qed.db',
 #     }
 # }
-# CACHES = {
-# 'default': {
-#         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-#         'LOCATION': '/tmp/qedcache',
-#     }
-# }
-
-import mongoengine
+CACHES = {
+'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/tmp/qedcache',
+    }
+}
 
 
-
-
-SESSION_ENGINE = 'mongoengine.django.sessions' # optional
-
+SESSION_ENGINE = 'mongoengine.django.sessions'  # optional
 _MONGODB_USER = 'srd1g10'
 _MONGODB_PASSWD = 'pass'
 _MONGODB_HOST = 'localhost'
