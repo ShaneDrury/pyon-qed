@@ -4,9 +4,8 @@ import numpy as np
 from pyon.core.cache import cache_data
 
 from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
+from meas24c.models import ChargedMeson24c
 from meas24c.views import get_charged_mesons, get_uncharged_mesons
-from meas24c.views import ps_mesons_005, ps_mesons_01, ps_mesons_02, \
-    ps_mesons_03
 
 
 bnds = ((0., 1.), (0, None))
@@ -20,47 +19,24 @@ fit_params_covariant['covariant'] = True
 fit_params_correlated = fit_params_covariant.copy()
 fit_params_correlated['correlated'] = True
 
-#  TODO: Maybe make this into a loop
+light_masses = [0.005, 0.01, 0.02]
+all_ps_mesons = ChargedMeson24c.objects.filter(source='GFWALL', sink='GAM_5')
 
+# Don't care about order so dict is fine
+ps_mesons = {m: all_ps_mesons(m_l=m) for m in light_masses}
+uncharged_views = {}
+charged_views = {}
+for m_l, mesons in ps_mesons.items():
+    @cache_data(cache_key="charged_{}".format(m_l))
+    def charged():
+        return partial(get_charged_mesons, mesons=mesons)()
 
-@cache_data()
-def charged_005():
-    return partial(get_charged_mesons, mesons=ps_mesons_005)
+    @cache_data(cache_key="uncharged_{}".format(m_l))
+    def uncharged():
+        return partial(get_uncharged_mesons, mesons=mesons)()
+    uncharged_views[m_l] = uncharged
+    charged_views[m_l] = charged
 
-
-@cache_data()
-def uncharged_005():
-    return partial(get_uncharged_mesons, mesons=ps_mesons_005)
-
-
-@cache_data()
-def charged_01():
-    return partial(get_charged_mesons, mesons=ps_mesons_01)
-
-
-@cache_data()
-def uncharged_01():
-    return partial(get_uncharged_mesons, mesons=ps_mesons_01)
-
-
-@cache_data()
-def charged_02():
-    return partial(get_charged_mesons, mesons=ps_mesons_02)
-
-
-@cache_data()
-def uncharged_02():
-    return partial(get_uncharged_mesons, mesons=ps_mesons_02)
-
-
-@cache_data()
-def charged_03():
-    return partial(get_charged_mesons, mesons=ps_mesons_03)
-
-
-@cache_data()
-def uncharged_03():
-    return partial(get_uncharged_mesons, mesons=ps_mesons_03)
 
 uncovariant_func = partial(all_del_m_sq,
                            hadron1_kwargs=fit_params_uncovariant,
@@ -71,70 +47,23 @@ covariant_func = partial(all_del_m_sq,
                          hadron1_kwargs=fit_params_covariant,
                          hadron2_kwargs=fit_params_covariant,
                          method=MinuitFitter)
+uncovariant_meas = {}
+covariant_meas = {}
+for m_l in light_masses:
+    uncovariant = partial(uncovariant_func,
+                          uncharged_hadrons=uncharged_views[m_l],
+                          charged_hadrons=charged_views[m_l])
 
-uncovariant_005 = partial(uncovariant_func,
-                          uncharged_hadrons=uncharged_005,
-                          charged_hadrons=charged_005)
+    covariant = partial(covariant_func,
+                        uncharged_hadrons=uncharged_views[m_l],
+                        charged_hadrons=charged_views[m_l])
+    uncovariant_meas[m_l] = uncovariant
+    covariant_meas[m_l] = covariant
 
-uncovariant_01 = partial(uncovariant_func,
-                         uncharged_hadrons=uncharged_01,
-                         charged_hadrons=charged_01)
+measurements = [{'name': 'ml_{}_uncov'.format(m_l),
+                 'measurement': uncovariant_meas[m_l],
+                 'template_name': 'delmsq/index.html'} for m_l in light_masses]
 
-uncovariant_02 = partial(uncovariant_func,
-                         uncharged_hadrons=uncharged_02,
-                         charged_hadrons=charged_02)
-
-uncovariant_03 = partial(uncovariant_func,
-                         uncharged_hadrons=uncharged_03,
-                         charged_hadrons=charged_03)
-
-covariant_005 = partial(covariant_func,
-                        uncharged_hadrons=uncharged_005,
-                        charged_hadrons=charged_005)
-
-covariant_01 = partial(covariant_func,
-                       uncharged_hadrons=uncharged_01,
-                       charged_hadrons=charged_01)
-
-covariant_02 = partial(covariant_func,
-                       uncharged_hadrons=uncharged_02,
-                       charged_hadrons=charged_02)
-
-covariant_03 = partial(covariant_func,
-                       uncharged_hadrons=uncharged_03,
-                       charged_hadrons=charged_03)
-
-measurements = [
-    # {
-    #     'name': 'ml_0.005_cov', 'measurement': covariant_005,
-    #     'template_name' : 'delmsq/index.html'
-    # },
-    # {
-    #     'name': 'ml_0.01_cov', 'measurement': covariant_01,
-    #     'template_name' : 'delmsq/index.html'
-    # },
-    # {
-    #     'name': 'ml_0.02_cov', 'measurement': covariant_02,
-    #     'template_name' : 'delmsq/index.html'
-    # },
-    # {
-    #     'name': 'ml_0.03_cov', 'measurement': covariant_03,
-    #     'template_name' : 'delmsq/index.html'
-    # },
-    {
-        'name': 'ml_0.005_uncov', 'measurement': uncovariant_005,
-        'template_name' : 'delmsq/index.html'
-    },
-    {
-        'name': 'ml_0.01_uncov', 'measurement': uncovariant_01,
-        'template_name' : 'delmsq/index.html'
-    },
-    {
-        'name': 'ml_0.02_uncov', 'measurement': uncovariant_02,
-        'template_name' : 'delmsq/index.html'
-    },
-    {
-        'name': 'ml_0.03_uncov', 'measurement': uncovariant_03,
-        'template_name' : 'delmsq/index.html'
-    },
-    ]
+# measurements += [{'name': 'ml_{}_cov'.format(m_l),
+#                   'measurement': covariant_meas[m_l],
+#                   'template_name': 'delmsq/index.html'} for m_l in light_masses]

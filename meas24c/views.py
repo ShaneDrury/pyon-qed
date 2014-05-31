@@ -1,18 +1,9 @@
 # Create your views here.
-from collections import defaultdict
 import logging
-from pprint import pprint
-from django.utils import six
-from pyon.lib.meson import PseudoscalarChargedMeson
-from meas24c.models import ChargedMeson24c, TimeSlice
-from delmsq.lib.statistics import equivalent_params
+
 import numpy as np
 
-ps_mesons = ChargedMeson24c.objects.filter(source='GFWALL', sink='GAM_5')
-ps_mesons_005 = ps_mesons(m_l=0.005)
-ps_mesons_01 = ps_mesons(m_l=0.01)
-ps_mesons_02 = ps_mesons(m_l=0.02)
-ps_mesons_03 = ps_mesons(m_l=0.03)
+from delmsq.lib.statistics import equivalent_params
 
 
 def all_el_equal(lst):
