@@ -15,6 +15,13 @@ ps_mesons_02 = ps_mesons(m_l=0.02)
 ps_mesons_03 = ps_mesons(m_l=0.03)
 
 
+def all_el_equal(lst):
+    """
+    Returns True if all elements in a list are equal to each other.
+    """
+    return lst[1:] == lst[:-1]
+
+
 def get_charged_mesons(mesons):
     """
     A new approach. Get all the data we will need at once and use python
@@ -42,6 +49,7 @@ def get_charged_mesons(mesons):
         if (m1, m2, q1, q2) in already_done:
             continue
         fd = []  # filtered_data
+        all_conf_numbers = []
         for mm1, mm2, qq1, qq2 in equivalent_params(m1, m2, q1, q2):
             try:
                 one_mass = all_mesons[(mm1, mm2, qq1, qq2)]
@@ -51,14 +59,17 @@ def get_charged_mesons(mesons):
             if len(one_mass) == 0:
                 continue
             fd.append(one_mass['data'])
-            #fd.append([q['data'] for q in one_mass])
-            conf_numbers = one_mass['config_numbers']
+            all_conf_numbers.append(one_mass['config_numbers'])
+
+        if not all_el_equal(all_conf_numbers):
+            raise ValueError("Averaging over non-identical "
+                             "configuration numbers")
         average_data = np.average(fd, axis=0)
         had = PseudoscalarChargedMeson(
             average_data,
             masses=(m1, m2),
             charges=(q1, q2),
-            config_numbers=conf_numbers
+            config_numbers=all_conf_numbers[0]
         )
         had.sort()
         had.fold()
