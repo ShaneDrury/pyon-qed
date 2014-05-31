@@ -1,8 +1,8 @@
 from functools import partial
 import numpy as np
 from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
-from meas24c.views import get_charged_mesons
-from delmsq.views import get_uncharged_mesons
+from meas24c.views import get_charged_mesons, get_uncharged_mesons
+#from delmsq.views import get_uncharged_mesons
 from meas24c.views import ps_mesons_005, ps_mesons_01, ps_mesons_02, \
     ps_mesons_03
 
@@ -59,20 +59,20 @@ uncovariant_03 = partial(all_del_m_sq,
                          hadron2_kwargs=fit_params_uncovariant,
                          method=MinuitFitter)
 measurements = [
-    {
-        'name': 'ml_0.005', 'measurement': uncovariant_005,
-        'template_name' : 'delmsq/index.html'
-    },
-    {
-        'name': 'ml_0.01', 'measurement': uncovariant_01,
-        'template_name' : 'delmsq/index.html'
-    },
+    # {
+    #     'name': 'ml_0.005', 'measurement': uncovariant_005,
+    #     'template_name' : 'delmsq/index.html'
+    # },
+    # {
+    #     'name': 'ml_0.01', 'measurement': uncovariant_01,
+    #     'template_name' : 'delmsq/index.html'
+    # },
     {
         'name': 'ml_0.02', 'measurement': uncovariant_02,
         'template_name' : 'delmsq/index.html'
     },
-    {
-        'name': 'ml_0.03', 'measurement': uncovariant_03,
-        'template_name' : 'delmsq/index.html'
-    },
+    # {
+    #     'name': 'ml_0.03', 'measurement': uncovariant_03,
+    #     'template_name' : 'delmsq/index.html'
+    # },
     ]
