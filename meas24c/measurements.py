@@ -29,11 +29,11 @@ charged_views = {}
 for m_l, mesons in ps_mesons.items():
     @cache_data(cache_key="charged_{}".format(m_l))
     def charged():
-        return partial(get_charged_mesons, mesons=mesons)()
+        return get_charged_mesons(mesons)
 
     @cache_data(cache_key="uncharged_{}".format(m_l))
     def uncharged():
-        return partial(get_uncharged_mesons, mesons=mesons)()
+        return get_uncharged_mesons(mesons)
     uncharged_views[m_l] = uncharged
     charged_views[m_l] = charged
 
@@ -47,18 +47,16 @@ covariant_func = partial(all_del_m_sq,
                          hadron1_kwargs=fit_params_covariant,
                          hadron2_kwargs=fit_params_covariant,
                          method=MinuitFitter)
-uncovariant_meas = {}
-covariant_meas = {}
-for m_l in light_masses:
-    uncovariant = partial(uncovariant_func,
-                          uncharged_hadrons=uncharged_views[m_l],
-                          charged_hadrons=charged_views[m_l])
 
-    covariant = partial(covariant_func,
-                        uncharged_hadrons=uncharged_views[m_l],
-                        charged_hadrons=charged_views[m_l])
-    uncovariant_meas[m_l] = uncovariant
-    covariant_meas[m_l] = covariant
+uncovariant_meas = {m_l: partial(uncovariant_func,
+                                 uncharged_hadrons=uncharged_views[m_l],
+                                 charged_hadrons=charged_views[m_l])
+                    for m_l in light_masses}
+
+covariant_meas = {m_l: partial(covariant_func,
+                               uncharged_hadrons=uncharged_views[m_l],
+                               charged_hadrons=charged_views[m_l])
+                  for m_l in light_masses}
 
 measurements = [{'name': 'ml_{}_uncov'.format(m_l),
                  'measurement': uncovariant_meas[m_l],
@@ -66,4 +64,5 @@ measurements = [{'name': 'ml_{}_uncov'.format(m_l),
 
 # measurements += [{'name': 'ml_{}_cov'.format(m_l),
 #                   'measurement': covariant_meas[m_l],
-#                   'template_name': 'delmsq/index.html'} for m_l in light_masses]
+#                   'template_name': 'delmsq/index.html'}
+#                  for m_l in light_masses]

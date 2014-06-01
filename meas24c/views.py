@@ -5,6 +5,8 @@ import numpy as np
 
 from delmsq.lib.statistics import equivalent_params
 
+log = logging.getLogger(__name__)
+
 
 def all_el_equal(lst):
     """
@@ -22,7 +24,7 @@ def get_charged_mesons(mesons):
     already_done = set()
     qs = mesons(charge_1__ne=0, charge_2__ne=0).exclude("m_l")
     all_mesons = {}
-    logging.debug("Getting all data")
+    log.debug("Getting all data")
     for meson in qs:
         m1 = meson.mass_1
         m2 = meson.mass_2
@@ -31,7 +33,7 @@ def get_charged_mesons(mesons):
         correlators = meson.correlators
         conf_numbers = [c.config_number for c in correlators]
         all_data = [[s.re for s in c.data] for c in correlators]
-        logging.debug("Adding {} {}".format((m1, m2), (q1, q2)))
+        log.debug("Adding {} {}".format((m1, m2), (q1, q2)))
         if (m1, m2, q1, q2) in all_mesons:
             raise ValueError
         all_mesons[(m1, m2, q1, q2)] = {'config_numbers': conf_numbers,
@@ -77,7 +79,7 @@ def get_uncharged_mesons(mesons):
         correlators = meson.correlators
         conf_numbers = [c.config_number for c in correlators]
         all_data = [[s.re for s in c.data] for c in correlators]
-        logging.debug("Adding {}".format((m1, m2)))
+        log.debug("Adding {}".format((m1, m2)))
         uncharged_hadrons[(m1, m2)] = {'data': all_data,
                                        'config_numbers': conf_numbers}
     return uncharged_hadrons

@@ -1,15 +1,15 @@
-import inspect
 import logging
 import minuit
+
 from pyon.lib.fitting import Fitter, fit_hadron, FitParams
 from pyon.lib.meson import PseudoscalarChargedMeson
 from pyon.lib.resampling import Jackknife
+
 from delmsq.lib.fitfunc import make_chi_sq, make_chi_sq_covar
 
 
 class MinuitFitter(Fitter):
     def fit_chi_sq(self, chi_sq, initial_value, **kwargs):
-        #print(initial_value)
         m = minuit.Minuit(chi_sq, **initial_value)
         #m.tol = 0.0001
         m.migrad()
@@ -84,7 +84,6 @@ def all_del_m_sq(charged_hadrons,
         ch.sort()
         ch.fold()
         ch.scale()
-
 
         unch_v = uncharged[(m1, m2)]
         unch = PseudoscalarChargedMeson(

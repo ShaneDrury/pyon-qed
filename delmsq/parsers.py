@@ -1,14 +1,12 @@
 import logging
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qed.settings")
-from django.conf import settings
 from django.db.models import Max
-logging.basicConfig(level=settings.LOGGING_LEVEL)
 import re
 from pyon.lib.io.formats import RE_SCIENTIFIC
 from pyon.lib.io.parsers import Parser
 from delmsq.models import ChargedMeson32c, TimeSlice
-
+log = logging.getLogger(__name__)
 __author__ = 'srd1g10'
 
 IWASAKI_REGEX = {
@@ -155,7 +153,7 @@ class LECParser(Parser):
 
 
 def populate_db():
-    logging.debug("Adding 0.0042")
+    log.debug("Adding 0.0042")
     parse_from_folder(os.path.join('data', '32c', 'IWASAKI+DSDR', 'ms0.045',
                                    'mu0.0042'), 0.0042)
 
@@ -183,7 +181,7 @@ def parse_from_folder(folder, m_l):
         TimeSlice.objects.bulk_create(bulk_list)
         bulk_mesons.append(mes)
     ChargedMeson32c.objects.bulk_create(bulk_mesons)
-    logging.debug("Done!")
+    log.debug("Done!")
 
 if __name__ == '__main__':
     populate_db()
