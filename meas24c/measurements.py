@@ -2,9 +2,9 @@ from functools import partial
 
 import numpy as np
 from pyon.core.cache import cache_data
-from delmsq.lib.delmsq import all_del_m_sq
 
-from delmsq.lib.fitting.minuit import fit_chi2_minuit, MinuitFitMethod
+from delmsq.lib.delmsq import all_del_m_sq
+from delmsq.lib.fitting.minuit import MinuitFitMethod
 from meas24c.models import ChargedMeson24c
 from meas24c.views import get_charged_mesons, get_uncharged_mesons
 
