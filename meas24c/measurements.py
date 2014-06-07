@@ -2,8 +2,9 @@ from functools import partial
 
 import numpy as np
 from pyon.core.cache import cache_data
+from delmsq.lib.delmsq import all_del_m_sq
 
-from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
+from delmsq.lib.fitting.minuit import fit_chi2_minuit, MinuitFitMethod
 from meas24c.models import ChargedMeson24c
 from meas24c.views import get_charged_mesons, get_uncharged_mesons
 
@@ -20,6 +21,7 @@ fit_params_correlated = fit_params_covariant.copy()
 fit_params_correlated['correlated'] = True
 
 light_masses = [0.005, 0.01, 0.02]
+# light_masses = [0.02]  # for testing
 all_ps_mesons = ChargedMeson24c.objects.filter(source='GFWALL', sink='GAM_5')
 
 # Don't care about order so dict is fine
@@ -41,12 +43,12 @@ for m_l, mesons in ps_mesons.items():
 uncovariant_func = partial(all_del_m_sq,
                            hadron1_kwargs=fit_params_uncovariant,
                            hadron2_kwargs=fit_params_uncovariant,
-                           method=MinuitFitter)
+                           method=MinuitFitMethod())
 
 covariant_func = partial(all_del_m_sq,
                          hadron1_kwargs=fit_params_covariant,
                          hadron2_kwargs=fit_params_covariant,
-                         method=MinuitFitter)
+                         method=MinuitFitMethod())
 
 uncovariant_meas = {m_l: partial(uncovariant_func,
                                  uncharged_hadrons=uncharged_views[m_l],

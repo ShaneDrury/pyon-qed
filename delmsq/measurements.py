@@ -1,6 +1,7 @@
 from functools import partial
 import numpy as np
-from delmsq.lib.fitting import MinuitFitter, all_del_m_sq
+from delmsq.lib.delmsq import all_del_m_sq
+from delmsq.lib.fitting import MinuitFitter
 from delmsq.views import get_charged_mesons, get_uncharged_mesons, ps_mesons
 
 
