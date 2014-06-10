@@ -10,5 +10,6 @@ setup(
     author_email='',
     description='',
     install_requires=['pyminuit', 'pyon',
-                      'mongoengine'],
+                      'mongoengine',
+                      'matplotlib'],
 )

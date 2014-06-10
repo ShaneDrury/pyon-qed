@@ -1,7 +1,9 @@
 import logging
+
 from pyon.lib.fitting.base import fit_hadron, FitParams
 from pyon.lib.meson import PseudoscalarChargedMeson
 from pyon.lib.resampling import Jackknife
+
 
 __author__ = 'srd1g10'
 log = logging.getLogger(__name__)
@@ -69,7 +71,7 @@ def all_del_m_sq(charged_hadrons,
         log.debug("Mass {}: {} {}".format(k, central_m1, err_m1))
         log.debug("Mass {}: {} {}".format((m1, m2), central_m2, err_m2))
         log.debug("Mass-squared difference {}: {} {}"
-                      .format(k, central_del_m2*1000, err_del_m2*1000))
+                  .format(k, central_del_m2*1000, err_del_m2*1000))
         all_fit_params[k] = FitParams(central_del_m2, err_del_m2,
                                       resampled_del_m2)
     return all_fit_params

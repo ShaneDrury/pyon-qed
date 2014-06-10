@@ -7,6 +7,7 @@ from delmsq.lib.delmsq import all_del_m_sq
 from delmsq.lib.fitting.minuit import MinuitFitMethod
 from meas24c.models import ChargedMeson24c
 from meas24c.views import get_charged_mesons, get_uncharged_mesons
+from meas24c.plots import make_plots
 
 
 bnds = ((0., 1.), (0, None))
@@ -20,8 +21,8 @@ fit_params_covariant['covariant'] = True
 fit_params_correlated = fit_params_covariant.copy()
 fit_params_correlated['correlated'] = True
 
-light_masses = [0.005, 0.01, 0.02]
-# light_masses = [0.02]  # for testing
+#light_masses = [0.005, 0.01, 0.02]
+light_masses = [0.02]  # for testing
 all_ps_mesons = ChargedMeson24c.objects.filter(source='GFWALL', sink='GAM_5')
 
 # Don't care about order so dict is fine
@@ -60,9 +61,11 @@ covariant_meas = {m_l: partial(covariant_func,
                                charged_hadrons=charged_views[m_l])
                   for m_l in light_masses}
 
+
 measurements = [{'name': 'ml_{}_uncov'.format(m_l),
                  'measurement': uncovariant_meas[m_l],
-                 'template_name': 'delmsq/index.html'} for m_l in light_masses]
+                 'template_name': 'delmsq/index.html',
+                 'plots': make_plots} for m_l in light_masses]
 
 # measurements += [{'name': 'ml_{}_cov'.format(m_l),
 #                   'measurement': covariant_meas[m_l],
