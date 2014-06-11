@@ -1,0 +1,33 @@
+{% extends 'global/base.html' %}
+{% block title %}Pyon Report: {{ title }}{% endblock %}
+{% block body %}
+    <br>
+    <div class="container">
+        {% for key, value in measurement_results.items() %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ key }}</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-8">
+                        <img src="{{ plots[key|string + '_eff_mass'] }}">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-sm btn-default" data-toggle="collapse" data-target="#plots-{{ value['hash'] }}">
+                                <span class="glyphicon glyphicon-picture"></span> &nbsp; Correlator
+                            </button>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div id="plots-{{ value['hash'] }}" class="collapse">
+                                <img src="{{ plots[key] }}">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <br>
+        {% endfor %}
+    </div>
+{% endblock %}
