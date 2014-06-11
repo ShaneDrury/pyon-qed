@@ -4,6 +4,8 @@ from pyon.lib.fitting.base import fit_hadron, FitParams
 from pyon.lib.meson import PseudoscalarChargedMeson
 from pyon.lib.resampling import Jackknife
 
+from delmsq.lib.fitting.minuit import MinuitFitMethod
+
 
 __author__ = 'srd1g10'
 log = logging.getLogger(__name__)
@@ -12,8 +14,8 @@ log = logging.getLogger(__name__)
 def all_del_m_sq(charged_hadrons,
                  uncharged_hadrons,
                  hadron1_kwargs,
-                 hadron2_kwargs,
-                 method=None):
+                 hadron2_kwargs):
+    method = MinuitFitMethod()
     all_fit_params = {}
     already_fit = {}
     charged = charged_hadrons()
@@ -48,7 +50,8 @@ def all_del_m_sq(charged_hadrons,
             fp1 = already_fit[k]
 
         if (m1, m2) not in already_fit:
-            fp2 = fit_hadron(unch, method=method, **hadron2_kwargs)
+            fp2 = fit_hadron(unch, method=method,
+                             **hadron2_kwargs)
             already_fit[(m1, m2)] = fp2
         else:
             fp2 = already_fit[(m1, m2)]

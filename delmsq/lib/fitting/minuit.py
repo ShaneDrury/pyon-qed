@@ -1,26 +1,6 @@
 import minuit
-from pyon.lib.fitting.base import Fitter, FitMethod, create_generic_chi2_fitter
-from pyon.lib.resampling import Jackknife
-from pyon.lib.statistics import get_inverse_cov_matrix
-from delmsq.lib.fitfunc import make_chi_sq, make_chi_sq_covar
-import numpy as np
 
-
-# def fit_chi2_minuit(data, fit_func=None, fit_range=None, initial_value=None, resampler=None,
-#                     covariant=False, correlated=False, bounds=None):
-#     resampler = resampler or Jackknife(n=1)
-#     if covariant:
-#         gen_err_func = lambda x: get_inverse_cov_matrix(x, correlated)
-#         gen_fit_obj = make_chi_sq_covar
-#     else:
-#         def gen_err_func(x):
-#             return np.std(x, axis=0) / len(x)
-#         #gen_err_func = lambda x: np.std(x, axis=0) / len(x)
-#         gen_fit_obj = make_chi_sq
-#     fit_method = MinuitFitMethod
-#     fitter = Fitter(data, fit_range, fit_func, initial_value, gen_err_func,
-#                     gen_fit_obj, fit_method, resampler, bounds)
-#     return fitter.fit()
+from pyon.lib.fitting.base import FitMethod, create_generic_chi2_fitter
 
 
 def fit_chi2_minuit(data, fit_func=None, fit_range=None, initial_value=None,
@@ -33,7 +13,7 @@ def fit_chi2_minuit(data, fit_func=None, fit_range=None, initial_value=None,
 
 
 class MinuitFitMethod(FitMethod):
-    def fit(self, fit_obj, initial_value, bounds, fit_func):
+    def fit(self, fit_obj, initial_value, bounds):
         m = minuit.Minuit(fit_obj, **initial_value)
         #m.tol = 0.0001
         m.migrad()
