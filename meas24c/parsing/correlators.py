@@ -2,10 +2,12 @@ from collections import defaultdict
 import logging
 import os
 import re
-from django.db.models import Max
+
 from pyon.lib.io.formats import RE_SCIENTIFIC
 from pyon.lib.io.parsers import Parser
+
 from meas24c.models import ChargedMeson24c, TimeSlice, Correlator
+
 
 __author__ = 'srd1g10'
 

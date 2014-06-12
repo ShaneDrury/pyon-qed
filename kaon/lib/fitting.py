@@ -1,18 +1,12 @@
-# class SVDFitter(FitterBase):
-#     """
-#     Minimizes by using `linalg.lstsq` i.e solving for x:
-#     a^T a x = a^T b
-#     """
-#     def fit(self):
-#         pass
-#
-#     @staticmethod
-#     def minimize(a, b):
-#         """
-#         Minimizes ax=b.
-#         :param a:
-#         :param b:
-#         :return:
-#         """
-#         m = np.linalg.lstsq(a, b)
-#         return m
+from pyon.lib.fitting.base import FitMethod
+import numpy as np
+
+
+class SVDFitMethod(FitMethod):
+    """
+    Solves for x in Ax=b using linalg.lstsq
+    """
+    def fit(self, fit_obj, initial_value, bounds):
+        a, b = fit_obj
+        m = np.linalg.lstsq(a, b)
+        return m

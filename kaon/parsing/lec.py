@@ -1,8 +1,10 @@
 import os
+import re
+
 from pyon.lib.io.formats import RE_SCIENTIFIC
 from pyon.lib.io.parsers import Parser
-import re
-from meas24c.models import PionLEC
+
+from kaon.models import PionLEC
 
 
 PION_LEC_REGEX = {

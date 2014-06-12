@@ -12,12 +12,7 @@ def create_hadrons(data):
     dat = data()
     hadrons = {}
     for k, v in dat.items():
-        try:
-            m1, m2, q1, q2 = k
-        except ValueError:
-            m1, m2 = k
-            q1 = 0
-            q2 = 0
+        m1, m2, q1, q2 = k
         h = PseudoscalarChargedMeson(
             v['data'],
             masses=(m1, m2),

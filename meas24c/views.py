@@ -80,7 +80,7 @@ def get_uncharged_mesons(mesons):
         conf_numbers = [c.config_number for c in correlators]
         all_data = [[s.re for s in c.data] for c in correlators]
         log.debug("Adding {}".format((m1, m2)))
-        uncharged_hadrons[(m1, m2)] = {'data': all_data,
-                                       'config_numbers': conf_numbers}
+        uncharged_hadrons[(m1, m2, 0, 0)] = {'data': all_data,
+                                             'config_numbers': conf_numbers}
     return uncharged_hadrons
 

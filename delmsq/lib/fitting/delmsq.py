@@ -13,10 +13,9 @@ def all_del_m_sq(charged_masses,
     charged = charged_masses()
     uncharged = uncharged_masses()
 
-    for k, v in charged.items():
-        m1, m2, q1, q2 = k
-        fp1 = v
-        fp2 = uncharged[(m1, m2)]
+    for k, fp1 in charged.items():
+        ml1, ml2, q1, q2 = k
+        fp2 = uncharged[(ml1, ml2, 0, 0)]
 
         central_m1 = fp1.average_params
         central_m2 = fp2.average_params

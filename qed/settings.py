@@ -1,6 +1,8 @@
 import logging
 import os
+
 import mongoengine
+
 
 PROJECT_NAME = 'QED'
 PROJECT_ROOT = os.path.normpath(os.path.dirname(__file__))
@@ -12,7 +14,7 @@ TEMPLATE_DIRS = (
 DEBUG = False
 TEMPLATE_DEBUG = False
 ROOT_MEASUREMENTS = 'qed.measurements'
-ROOT_PARSERS = 'meas24c.parsers'
+ROOT_PARSERS = 'qed.parsers'
 
 # Django things
 SECRET_KEY = 'foo'

@@ -1,4 +1,4 @@
-from pyon.core import measurement
+#from pyon.core import measurement
 
 # Create your measurements here
 
