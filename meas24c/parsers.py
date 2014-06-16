@@ -26,12 +26,12 @@ parsers = [
     },
     {
         'name': '0.01, 0.005',
-        'parser': make_parser(os.path.join(root_folder, 'mv0.001-msea-0.005'),
+        'parser': make_parser(os.path.join(root_folder, 'mv0.001-msea0.005'),
                               0.005)
     },
     {
         'name': '0.01, 0.01',
-        'parser': make_parser(os.path.join(root_folder, 'mv0.001-msea-0.01'),
+        'parser': make_parser(os.path.join(root_folder, 'mv0.001-msea0.01'),
                               0.01)
     },
     {

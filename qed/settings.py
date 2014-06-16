@@ -21,7 +21,9 @@ SECRET_KEY = 'foo'
 INSTALLED_APPS = (
     'qed',
     'delmsq',
-    'meas24c',
+    # 'meas24c',
+    'pion',
+    'kaon',
 )
 
 DATABASES = {
@@ -30,27 +32,12 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': 'qed.db',
-#     }
-# }
-
-
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': '/tmp/qedcache',
-        }
+    }
 }
-
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-#         'LOCATION': '127.0.0.1:11211',
-#     }
-# }
 
 
 SESSION_ENGINE = 'mongoengine.django.sessions'  # optional

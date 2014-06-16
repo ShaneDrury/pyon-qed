@@ -3,9 +3,10 @@
 # Create your measurements here
 
 measurements = [
-#    {
-#        'name': 'It's A Wonderful Measurement',
-#        'measurement': some_meas_function,
-#        'template_name': 'path/to/meas/template.html'
-#    }
+   {
+       # 'name': 'Find Kaon LECs'
+       # 'measurement': some_meas_function,
+       # 'template_name': 'path/to/meas/template.html',
+       # 'plots': plot_func
+   }
 ]

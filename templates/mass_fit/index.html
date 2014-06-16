@@ -3,49 +3,64 @@
 {% block body %}
     <br>
     <div class="container">
-        {% for key, value in measurement_results.items() %}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ key }}</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-10">
-                            Number of samples: {{value['resampled_params']|length}}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8">
-                            Mass: <code>{{ value['average_params'] }} ({{ value['errs'] }})</code>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-sm btn-default" data-toggle="collapse" data-target="#resampled-{{ value['hash'] }}">
-                                <span class="glyphicon glyphicon-list-alt"></span> &nbsp; Samples
-                            </button>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-sm btn-default" data-toggle="collapse" data-target="#plots-{{ value['hash'] }}">
-                                <span class="glyphicon glyphicon-picture"></span> &nbsp; Plots
-                            </button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-10">
-                            <div id="resampled-{{ value['hash'] }}" class="collapse">
-                                <pre style="word-break: normal; word-wrap: normal; white-space:pre-wrap;">{% for el in value['resampled_params'] %}{{'%0.20f'| format(el|float)}} {% endfor %}</pre>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-10">
-                            <div id="plots-{{ value['hash'] }}" class="collapse">
-                                <img src="{{ plots[key] }}">
-                            </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Mass Squared vs m_l</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div>
+                            <img src="{{ plots['delmsq_vs_ml'] }}">
                         </div>
                     </div>
                 </div>
             </div>
-            <br>
-        {% endfor %}
-    </div>
+        </div>
+
+    {% for key, value in measurement_results.items() %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ key }}</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-10">
+                        Number of samples: {{value['resampled_params']|length}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        Mass: <code>{{ value['average_params'] }} ({{ value['errs'] }})</code>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-sm btn-default" data-toggle="collapse" data-target="#resampled-{{ value['hash'] }}">
+                            <span class="glyphicon glyphicon-list-alt"></span> &nbsp; Samples
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-sm btn-default" data-toggle="collapse" data-target="#plots-{{ value['hash'] }}">
+                            <span class="glyphicon glyphicon-picture"></span> &nbsp; Plots
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10">
+                        <div id="resampled-{{ value['hash'] }}" class="collapse">
+                            <pre style="word-break: normal; word-wrap: normal; white-space:pre-wrap;">{% for el in value['resampled_params'] %}{{'%0.20f'| format(el|float)}} {% endfor %}</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10">
+                        <div id="plots-{{ value['hash'] }}" class="collapse">
+                            <img src="{{ plots[key] }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+</div>
 {% endblock %}
