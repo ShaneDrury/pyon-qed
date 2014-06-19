@@ -7,21 +7,22 @@ from delmsq.lib.fitting.delmsq import all_del_m_sq
 from delmsq.lib.fitting.fit_mass import fit_masses, create_hadrons
 from meas24c.models import ChargedMeson24c
 from meas24c.views import get_charged_mesons, get_uncharged_mesons
-from meas24c.plots import delmsq_plots, mass_plots_chg, mass_plots_unchg, \
-    correlator_plots
+from meas24c.plots import delmsq_plots, mass_plots_chg, mass_plots_unchg
 
 
 bnds = ((0., 1.), (0, None))
 fit_params_uncovariant = dict(fit_range=np.array(range(9, 32+1)),
                               initial_value=dict(m=0.18, c=1.39432),
-                              covariant=False,
-                              bounds=bnds)
+                              covariant=True,
+                              correlated=False,
+                              bounds=bnds,
+                              bin_size=2)
 fit_params_covariant = fit_params_uncovariant.copy()
 fit_params_covariant['covariant'] = True
 fit_params_correlated = fit_params_covariant.copy()
 fit_params_correlated['correlated'] = True
 
-light_masses = [0.005, 0.01, 0.02]
+light_masses = [0.005, 0.01, 0.02, 0.03]
 # light_masses = [0.02]  # for testing
 all_ps_mesons = ChargedMeson24c.objects.filter(source='GFWALL', sink='GAM_5')
 
@@ -80,22 +81,25 @@ uncovariant_delmsq_meas = {}
 
 for m_l in light_masses:
     cacher = cache_data('uncovar_del_m_sq_{}'.format(m_l))
-    uncovar_delmsq = cacher(partial(all_del_m_sq, charged_masses=uncovariant_mass_meas_ch[m_l],
-                            uncharged_masses=uncovariant_mass_meas_unch[m_l]))
+    uncovar_delmsq = cacher(partial(all_del_m_sq,
+                                    charged_masses
+                                    =uncovariant_mass_meas_ch[m_l],
+                                    uncharged_masses
+                                    =uncovariant_mass_meas_unch[m_l]))
     uncovariant_delmsq_meas[m_l] = uncovar_delmsq
 
 
 measurements = []
 
-measurements += [{'name': 'corr_ml_{}_unch'.format(m_l),
-                 'measurement': corr_meas_unch[m_l],
-                 'template_name': 'correlator/index.html',
-                 'plots': correlator_plots} for m_l in light_masses]
-
-measurements += [{'name': 'corr_ml_{}_ch'.format(m_l),
-                 'measurement': corr_meas_ch[m_l],
-                 'template_name': 'correlator/index.html',
-                 'plots': correlator_plots} for m_l in light_masses]
+# measurements += [{'name': 'corr_ml_{}_unch'.format(m_l),
+#                  'measurement': corr_meas_unch[m_l],
+#                  'template_name': 'correlator/index.html',
+#                  'plots': correlator_plots} for m_l in light_masses]
+#
+# measurements += [{'name': 'corr_ml_{}_ch'.format(m_l),
+#                  'measurement': corr_meas_ch[m_l],
+#                  'template_name': 'correlator/index.html',
+#                  'plots': correlator_plots} for m_l in light_masses]
 
 measurements += [{'name': 'mass_ml_{}_uncov_unch'.format(m_l),
                   'measurement': uncovariant_mass_meas_unch[m_l],

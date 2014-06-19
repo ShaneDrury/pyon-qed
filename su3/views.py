@@ -1,25 +1,19 @@
 # Create your views here.
 import logging
 
-from meas24c.measurements import uncovariant_delmsq_meas
-
 log = logging.getLogger(__name__)
 
 
-def get_del_m_sq(covariant=False):
-    if not covariant:
-        all_del_m_sq = uncovariant_delmsq_meas
-    else:
-        all_del_m_sq = covariant_delmsq_meas
-
+def filter_del_m_sq(all_del_m_sq):
     filtered_delmsq = {}
 
     for m_l, v in all_del_m_sq.items():
         results = v()
         for k, delmsq in results.items():
             ml1, ml2, q1, q2 = k
+            new_key = (ml1, ml2, m_l, q1, q2)
             if ml1 <= 0.01 and ml2 <= 0.01:
                 log.debug("Accepting ml={} {}, {}".format(m_l, (ml1, ml2),
                                                           (q1, q2)))
-                filtered_delmsq[k] = delmsq
+                filtered_delmsq[new_key] = delmsq
     return filtered_delmsq
