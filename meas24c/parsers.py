@@ -13,13 +13,14 @@ def make_parser(folder, m_l):
 
 parsers = [
     {
-        'name': '0.02',
-        'parser': make_parser(os.path.join(root_folder, '0.02'), 0.02)
-    },
-    {
         'name': '0.005',
         'parser': make_parser(os.path.join(root_folder, '0.005'), 0.005)
     },
+    {
+        'name': '0.02',
+        'parser': make_parser(os.path.join(root_folder, '0.02'), 0.02)
+    },
+
     {
         'name': '0.03',
         'parser': make_parser(os.path.join(root_folder, '0.03'), 0.03)

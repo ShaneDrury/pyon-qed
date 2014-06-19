@@ -6,8 +6,9 @@ def find_qed_lec():
     light_delmsq = {k: uncovariant_delmsq_meas[k] for k in (0.005, 0.01, 0.02, 0.03)}
     # filtered_del_m_sq = filter_del_m_sq(uncovariant_delmsq_meas)
     filtered_del_m_sq = filter_del_m_sq(light_delmsq)
-    for xx in filtered_del_m_sq.keys():
-        print(xx)
+    print(len(filtered_del_m_sq.keys()))
+    # for xx in sorted(filtered_del_m_sq.keys()):
+    #     print(xx)
     exit()
 
 measurements = [

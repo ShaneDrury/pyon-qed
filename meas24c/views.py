@@ -1,7 +1,6 @@
 # Create your views here.
 import logging
 
-from mongoengine import Q
 import numpy as np
 
 from delmsq.lib.statistics import equivalent_params
@@ -24,8 +23,7 @@ def get_charged_mesons(mesons):
     """
     charged_hadrons = {}
     already_done = set()
-    qs = mesons(Q(charge_1__ne=0) or Q(charge_2__ne=0)).exclude("m_l")
-    # Q(charge_1=0) or Q(charge_2=0)
+    qs = mesons().exclude("m_l")
     all_mesons = {}
     log.debug("Getting all data")
     for meson in qs:
@@ -33,6 +31,8 @@ def get_charged_mesons(mesons):
         m2 = meson.mass_2
         q1 = meson.charge_1
         q2 = meson.charge_2
+        if q1 == 0 and q2 == 0:
+            continue
         correlators = meson.correlators
         conf_numbers = [c.config_number for c in correlators]
         all_data = [[s.re for s in c.data] for c in correlators]

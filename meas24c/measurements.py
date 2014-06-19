@@ -7,7 +7,7 @@ from delmsq.lib.fitting.delmsq import all_del_m_sq
 from delmsq.lib.fitting.fit_mass import fit_masses, create_hadrons
 from meas24c.models import ChargedMeson24c
 from meas24c.views import get_charged_mesons, get_uncharged_mesons
-from meas24c.plots import delmsq_plots, mass_plots_chg, mass_plots_unchg
+from meas24c.plots import delmsq_plots, mass_plots_chg, mass_plots_unchg, correlator_plots
 
 
 bnds = ((0., 1.), (0, None))
@@ -28,6 +28,7 @@ all_ps_mesons = ChargedMeson24c.objects.filter(source='GFWALL', sink='GAM_5')
 
 # Don't care about order so dict is fine
 ps_mesons = {m_l: all_ps_mesons(m_l=m_l) for m_l in light_masses}
+
 uncharged_views = {}
 charged_views = {}
 
@@ -91,15 +92,15 @@ for m_l in light_masses:
 
 measurements = []
 
-# measurements += [{'name': 'corr_ml_{}_unch'.format(m_l),
-#                  'measurement': corr_meas_unch[m_l],
-#                  'template_name': 'correlator/index.html',
-#                  'plots': correlator_plots} for m_l in light_masses]
-#
-# measurements += [{'name': 'corr_ml_{}_ch'.format(m_l),
-#                  'measurement': corr_meas_ch[m_l],
-#                  'template_name': 'correlator/index.html',
-#                  'plots': correlator_plots} for m_l in light_masses]
+measurements += [{'name': 'corr_ml_{}_unch'.format(m_l),
+                 'measurement': corr_meas_unch[m_l],
+                 'template_name': 'correlator/index.html',
+                 'plots': correlator_plots} for m_l in light_masses]
+
+measurements += [{'name': 'corr_ml_{}_ch'.format(m_l),
+                 'measurement': corr_meas_ch[m_l],
+                 'template_name': 'correlator/index.html',
+                 'plots': correlator_plots} for m_l in light_masses]
 
 measurements += [{'name': 'mass_ml_{}_uncov_unch'.format(m_l),
                   'measurement': uncovariant_mass_meas_unch[m_l],

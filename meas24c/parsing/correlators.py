@@ -78,6 +78,7 @@ class Iwasaki24cCharged(Parser):
             charge_2 = int(round(float(match['q2']) / EM_CHARGE, 1))
             mass_1 = float(match['m1'])
             mass_2 = float(match['m2'])
+
             re_data = []
             im_data = []
             time_slices = []
@@ -129,7 +130,6 @@ def parse_correlators_from_folder(folder, m_l):
                                                    (d['charge_1'],
                                                     d['charge_2']),
                                                    d['config_number']))
-
         re_dat = d.pop('data')
         d.pop('im_data')
 
