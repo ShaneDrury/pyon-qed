@@ -11,7 +11,7 @@ def filter_del_m_sq(all_del_m_sq):
         results = v()
         for k, delmsq in results.items():
             ml1, ml2, q1, q2 = k
-            new_key = (ml1, ml2, m_l, q1, q2)
+            new_key = (ml1, ml2, q1, q2, m_l)
             if ml1 <= 0.01 and ml2 <= 0.01:
                 log.debug("Accepting ml={} {}, {}".format(m_l, (ml1, ml2),
                                                           (q1, q2)))

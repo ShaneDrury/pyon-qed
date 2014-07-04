@@ -8,10 +8,11 @@ from delmsq.lib.fitting.minuit import MinuitFitMethod
 log = logging.getLogger(__name__)
 
 
-def create_hadrons(data):
+def create_hadrons(data, bin_size):
     dat = data()
     hadrons = {}
     for k, v in dat.items():
+
         m1, m2, q1, q2 = k
         h = PseudoscalarChargedMeson(
             v['data'],
@@ -22,6 +23,9 @@ def create_hadrons(data):
         h.sort()
         h.fold()
         h.scale()
+        if bin_size > 1:
+            h.bin(bin_size)
+
         hadrons[k] = h
     return hadrons
 
@@ -32,7 +36,6 @@ def fit_masses(hadrons,
     all_fit_params = {}
     already_fit = {}
     had = hadrons()
-
     for k, h in had.items():
         if k not in already_fit:
             fp = fit_hadron(h, method=method, **hadron_kwargs)

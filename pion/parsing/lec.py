@@ -4,8 +4,6 @@ import re
 from pyon.lib.io.formats import RE_SCIENTIFIC
 from pyon.lib.io.parsers import Parser
 
-from kaon.models import PionLEC
-
 
 PION_LEC_REGEX = {
     'filename': '(?P<config_number>\d+)',
@@ -59,7 +57,4 @@ class PionLECParser(Parser):
         return raw_data
 
 
-def parse_lecs_from_folder(folder):
-    all_data = PionLECParser().get_from_folder(folder)
-    bulk_list = [PionLEC(**d) for d in all_data]
-    PionLEC.objects.insert(bulk_list)
+

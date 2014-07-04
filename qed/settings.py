@@ -18,10 +18,10 @@ ROOT_PARSERS = 'qed.parsers'
 
 # Django things
 SECRET_KEY = 'foo'
-INSTALLED_APPS = (
+INSTALLED_APPS = (  # I don't think this does anything
     'qed',
     'delmsq',
-    # 'meas24c',
+    'meas24c',
     'pion',
     'kaon',
 )
@@ -35,7 +35,7 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/tmp/qedcache',
+        'LOCATION': os.path.join(PROJECT_ROOT, '../cache'),
     }
 }
 
