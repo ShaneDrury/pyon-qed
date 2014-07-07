@@ -11,8 +11,8 @@ from meas24c.plots import delmsq_plots, mass_plots_chg, mass_plots_unchg
 
 
 bnds = ((0., 1.), (0, None))
-# light_masses = [0.005, 0.01, 0.02, 0.03]
-light_masses = [0.005, ]
+light_masses = [0.005, 0.01, 0.02, 0.03]
+# light_masses = [0.005, ]
 
 fit_params_uncovariant = dict(fit_range=np.array(range(9, 32+1)),
                               x_range=np.array(range(9, 32+1)),

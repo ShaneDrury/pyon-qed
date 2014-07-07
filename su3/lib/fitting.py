@@ -61,6 +61,8 @@ class DelMSqFitter(Fitter):
                                            self.x_range,
                                            self.fit_func,
                                            fit_range=self.fit_range)
+        self.average_fit_obj = average_fit_obj
         average_params = self.fit_method.fit(average_fit_obj,
                                              self.initial_value, self.bounds)
+        average_params['chi_sq_dof'] = self._chi_sq_dof(average_params['chi_sq_dof'])
         return average_params

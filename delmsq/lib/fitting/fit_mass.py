@@ -44,9 +44,11 @@ def fit_masses(hadrons,
             fp = already_fit[k]
         central_mass = fp.average_params['m']
         err_mass = fp.errs['m']
-        c2 = fp.chi_sq_dof
-        log.debug("Mass {}: {} {} {}".format(k, central_mass, err_mass, c2))
+        c2 = fp.average_params['chi_sq_dof']
+        c2_err = fp.errs['chi_sq_dof']
+        log.debug("Mass {}: {} {} {} {}".format(k, central_mass, err_mass, c2,
+                                                c2_err))
         resampled_mass = fp.resampled_params['m']
         all_fit_params[k] = FitParams(central_mass, err_mass,
-                                      resampled_mass, c2)
+                                      resampled_mass)
     return all_fit_params

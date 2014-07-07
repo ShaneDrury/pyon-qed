@@ -133,8 +133,13 @@ def find_qed_lec():
 
 measurements = [
     {
-        'name': 'qed_lec',
+        'name': 'qed_lec_fv',
         'measurement': find_qed_lec,
         'template_name': 'su3/index.html',
-    }
+    },
+    # {
+    #     'name': 'mu_md_fv',
+    #     'measurement': find_light_masses_su3,
+    #     'template_name': 'su3/mud.html',
+    # }
 ]

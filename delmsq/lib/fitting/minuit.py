@@ -23,7 +23,7 @@ class MinuitFitMethod(FitMethod):
         m.tol = 0.0001
         # m.printMode = 1
         m.migrad()
-        self.fval = m.fval
+        m.values['chi_sq_dof'] = m.fval
         return m.values
 
     def _convert_initial_value(self, dic):
