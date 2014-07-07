@@ -20,12 +20,12 @@ def create_hadrons(data, bin_size):
             charges=(q1, q2),
             config_numbers=v['config_numbers']
         )
+
+        if bin_size > 1:
+            h.bin(bin_size)
         h.sort()
         h.fold()
         h.scale()
-        if bin_size > 1:
-            h.bin(bin_size)
-
         hadrons[k] = h
     return hadrons
 
@@ -42,12 +42,11 @@ def fit_masses(hadrons,
             already_fit[k] = fp
         else:
             fp = already_fit[k]
-
         central_mass = fp.average_params['m']
-
         err_mass = fp.errs['m']
-        log.debug("Mass {}: {} {}".format(k, central_mass, err_mass))
+        c2 = fp.chi_sq_dof
+        log.debug("Mass {}: {} {} {}".format(k, central_mass, err_mass, c2))
         resampled_mass = fp.resampled_params['m']
         all_fit_params[k] = FitParams(central_mass, err_mass,
-                                      resampled_mass)
+                                      resampled_mass, c2)
     return all_fit_params

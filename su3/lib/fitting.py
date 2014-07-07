@@ -1,22 +1,34 @@
-from functools import partial
-
 from pyon.lib.fitting.base import Fitter, GenericChi2
+
 from pyon.lib.resampling import Jackknife
-import numpy as np
 
 from delmsq.lib.fitting.minuit import MinuitFitMethod
 
 
+
+
+# class DelMSqFitter(Fitter):
+#     def _gen_errs(self):
+#         if self.frozen:
+#             errs = self.gen_err_func(self.data)
+#             errors = [errs for _ in self.data]
+#         else:
+#             errors = [self.gen_err_func(sample) for sample in
+#                       self.resampler.generate_samples(self.data)]
+#         return errors
+
+
 def fit_chi2_minuit_delmsq(data, x_range=None, fit_func=None, fit_range=None,
-                           initial_value=None, bounds=None, frozen=True):
+                           initial_value=None, bounds=None, frozen=True,
+                           errs=None):
 
     resampler = Jackknife(n=1)
-    gen_err_func = partial(np.std, axis=0)
+    # gen_err_func = partial(np.std, axis=0)
+    gen_err_func = lambda x: errs
     gen_fit_obj = make_delmsq_chi2
-
-    fitter = Fitter(data, x_range, fit_range, fit_func, initial_value,
-                    gen_err_func, gen_fit_obj, MinuitFitMethod(), resampler,
-                    bounds, frozen)
+    fitter = DelMSqFitter(data, x_range, fit_range, fit_func, initial_value,
+                          gen_err_func, gen_fit_obj, MinuitFitMethod(), resampler,
+                          bounds, frozen)
     return fitter
 
 
@@ -34,4 +46,21 @@ class DelMSqChi2(GenericChi2):
     """
     def __call__(self, *args):
         ff = self.fit_func(self.x_range, *args)
-        return sum((self.data - ff)**2 / self.errors**2)
+        return sum(((self.data - ff) / self.errors)**2)
+
+
+class DelMSqFitter(Fitter):
+
+    def _gen_errs(self):
+        errors = self.gen_err_func(self.data)
+        return errors
+
+    def _get_average_params(self):
+        average_fit_obj = self.gen_fit_obj(self.data,
+                                           self.errors,
+                                           self.x_range,
+                                           self.fit_func,
+                                           fit_range=self.fit_range)
+        average_params = self.fit_method.fit(average_fit_obj,
+                                             self.initial_value, self.bounds)
+        return average_params

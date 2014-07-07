@@ -11,8 +11,8 @@ from meas24c.plots import delmsq_plots, mass_plots_chg, mass_plots_unchg
 
 
 bnds = ((0., 1.), (0, None))
-light_masses = [0.005, 0.01, 0.02, 0.03]
-# light_masses = [0.005, ]
+# light_masses = [0.005, 0.01, 0.02, 0.03]
+light_masses = [0.005, ]
 
 fit_params_uncovariant = dict(fit_range=np.array(range(9, 32+1)),
                               x_range=np.array(range(9, 32+1)),
@@ -90,8 +90,8 @@ for m_l in light_masses:
                                      hadrons=corr_meas_unch[m_l]))
 
     cacher = cache_data('covar_mass_ch_func_{}'.format(m_l))
-    covar_mass_ch = partial(covariant_mass[m_l],
-                            hadrons=corr_meas_ch[m_l])
+    covar_mass_ch = cacher(partial(covariant_mass[m_l],
+                                   hadrons=corr_meas_ch[m_l]))
 
     covariant_mass_meas_unch[m_l] = covar_mass_unch
     covariant_mass_meas_ch[m_l] = covar_mass_ch
