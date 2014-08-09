@@ -1,6 +1,7 @@
 import logging
 
-from pyon.lib.fitting.base import fit_hadron, FitParams
+from pyon.lib.fitting.base import FitParams
+from pyon.lib.fitting.common import fit_hadron
 from pyon.lib.meson import PseudoscalarChargedMeson
 
 from delmsq.lib.fitting.minuit import MinuitFitMethod
@@ -32,12 +33,12 @@ def create_hadrons(data, bin_size):
 
 def fit_masses(hadrons,
                hadron_kwargs):
-    method = MinuitFitMethod()
     all_fit_params = {}
     already_fit = {}
     had = hadrons()
     for k, h in had.items():
         if k not in already_fit:
+            method = MinuitFitMethod
             fp = fit_hadron(h, method=method, **hadron_kwargs)
             already_fit[k] = fp
         else:

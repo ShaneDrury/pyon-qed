@@ -1,9 +1,7 @@
-from functools import partial
 import logging
 
 from pyon.lib.fitting.base import FitParams
 import numpy as np
-from pyon.lib.resampling import Jackknife
 
 from meas24c.measurements import covariant_delmsq_meas
 from su3.lib.fitting import fit_chi2_minuit_delmsq
@@ -69,13 +67,24 @@ def find_qed_lec():
     jk_m_res = [qs.m_res for qs in all_lec]
 
     padded = pad(filtered_del_m_sq)
-    fit_func = partial(del_m_sq_su3,
-                       B0=np.average(jk_b0),
-                       F0=np.average(jk_f0),
-                       musq=np.average(jk_miu),
-                       L4=np.average(jk_l4),
-                       L5=np.average(jk_l5),
-                       mres=np.average(jk_m_res))
+
+    fit_func_params = [dict(B0=b0,
+                            F0=f0,
+                            musq=musq,
+                            L4=l4,
+                            L5=l5,
+                            mres=mres)
+                       for b0, f0, musq, l4, l5, mres in zip(jk_b0, jk_f0,
+                                                             jk_miu, jk_l4,
+                                                             jk_l5, jk_m_res)]
+    # fit_func = partial(del_m_sq_su3,
+    #                    B0=np.average(jk_b0),
+    #                    F0=np.average(jk_f0),
+    #                    musq=np.average(jk_miu),
+    #                    L4=np.average(jk_l4),
+    #                    L5=np.average(jk_l5),
+    #                    mres=np.average(jk_m_res))
+    fit_func = del_m_sq_su3
 
     initial_value = dict(C=2.2*1e-7,
                          Y2=1.63*1e-2,
@@ -91,43 +100,46 @@ def find_qed_lec():
     data = np.swapaxes(data, 0, 1)
     errs = [v.errs for k, v in padded.items()]
 
-    # Get average values
-    fitter = fit_chi2_minuit_delmsq(ave_data, fit_func=fit_func,
+    fitter = fit_chi2_minuit_delmsq(data, fit_func=fit_func,
                                     x_range=x_range,
                                     initial_value=initial_value,
-                                    errs=errs
-    )
+                                    errs=errs, fit_func_params=fit_func_params,
+                                    central_data=ave_data)
 
-    average_fp = fitter._get_average_params()
+    fp = fitter.fit()
+    print(fp.average_params)
+    print(fp.errs)
+
+    # average_fp = fitter._get_average_params()
     # TODO: Turn this into a Fitter class
     # Get jackknife values
-    resampled = []
-    for i, sample in enumerate(data):
-        fit_func = partial(del_m_sq_su3,
-                           B0=jk_b0[i],
-                           F0=jk_f0[i],
-                           musq=jk_miu[i],
-                           L4=jk_l4[i],
-                           L5=jk_l5[i],
-                           mres=jk_m_res[i])
-        fitter = fit_chi2_minuit_delmsq(sample, fit_func=fit_func,
-                                        x_range=x_range,
-                                        initial_value=initial_value,
-                                        errs=errs
-                                        )
-
-        resampled_fp = fitter._get_average_params()
-        resampled.append(resampled_fp)
-        log.debug(resampled_fp)
-    resampler = Jackknife(n=1)
-
-    to_return = {}
-    for k in average_fp.keys():
-        central = average_fp[k]
-        samples = [x[k] for x in resampled]
-        error = resampler.calculate_errors(central, samples)
-
-        to_return[k] = FitParams(central, error, samples)
+    # resampled = []
+    # for i, sample in enumerate(data):
+    #     fit_func = partial(del_m_sq_su3,
+    #                        B0=jk_b0[i],
+    #                        F0=jk_f0[i],
+    #                        musq=jk_miu[i],
+    #                        L4=jk_l4[i],
+    #                        L5=jk_l5[i],
+    #                        mres=jk_m_res[i])
+    #     fitter = fit_chi2_minuit_delmsq(sample, fit_func=fit_func,
+    #                                     x_range=x_range,
+    #                                     initial_value=initial_value,
+    #                                     errs=errs,
+    #                                     fit_func_params=fit_func_params)
+    #
+    #     resampled_fp = fitter._get_average_params()
+    #     resampled.append(resampled_fp)
+    #     log.debug(resampled_fp)
+    # resampler = Jackknife(n=1)
+    #
+    # to_return = {}
+    # for k in fp.keys():
+    #     central = fp[k]
+    #     samples = [x[k] for x in resampled]
+    #     error = resampler.calculate_errors(central, samples)
+    #
+    #     to_return[k] = FitParams(central, error, samples)
 
     return to_return
 
@@ -136,7 +148,7 @@ measurements = [
         'name': 'qed_lec_fv',
         'measurement': find_qed_lec,
         'template_name': 'su3/index.html',
-    },
+        },
     # {
     #     'name': 'mu_md_fv',
     #     'measurement': find_light_masses_su3,

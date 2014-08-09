@@ -14,8 +14,7 @@ bnds = ((0., 1.), (0, None))
 light_masses = [0.005, 0.01, 0.02, 0.03]
 # light_masses = [0.005, ]
 
-fit_params_uncovariant = dict(fit_range=np.array(range(9, 32+1)),
-                              x_range=np.array(range(9, 32+1)),
+fit_params_uncovariant = dict(x_range=np.array(range(9, 32+1)),
                               initial_value=dict(m=0.25, c=1.39432),
                               covariant=False,
                               correlated=False,
@@ -28,6 +27,7 @@ create_hadrons_params[0.01] = {'bin_size': 4}
 fit_params_covariant = fit_params_uncovariant.copy()
 
 fit_params_covariant['covariant'] = True
+
 
 # fit_params_correlated = fit_params_covariant.copy()
 # for m_l in light_masses:
