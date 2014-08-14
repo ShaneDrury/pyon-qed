@@ -77,19 +77,19 @@ class DelMSqFitter(Fitter):
             self._err_gen.generate_central_error(self._central_data),
             self._central_fit_func, self._x_range)
 
-    def _prepare_fit_objs(self, ave_resampled, errors):
+    def _prepare_fit_objs(self):
         """
         Note, ave_resampled isn't used, but self._data is instead.
         """
         self._fit_objects = [self._fit_obj_gen.generate(sample, err,
                                                         ff,
                                                         self._x_range)
-                             for sample, err, ff in zip(self._data, errors,
+                             for sample, err, ff in zip(self._data,
+                                                        self._errors,
                                                         self._fit_funcs)]
 
-
-    def _prepare_ave_resampled(self, resampled_data):
-        return self._central_data
+    def _prepare_ave_resampled(self):
+        self._ave_resampled = self._central_data
 
 
     # class DelMSqFitter(FitterBase):
