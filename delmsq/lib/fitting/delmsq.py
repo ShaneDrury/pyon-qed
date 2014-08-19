@@ -37,6 +37,5 @@ def all_del_m_sq(charged_masses,
     return all_fit_params
 
 
-def del_m_sq(m1, m2):
-    return m1*m1 - m2*m2
-
+def del_m_sq(m1: float, m2: float) -> float:
+    return m1 * m1 - m2 * m2

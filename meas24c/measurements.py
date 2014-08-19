@@ -9,7 +9,6 @@ from meas24c.models import ChargedMeson24c
 from meas24c.views import get_charged_mesons, get_uncharged_mesons
 from meas24c.plots import delmsq_plots, mass_plots_chg, mass_plots_unchg
 
-
 bnds = ((0., 1.), (0, None))
 light_masses = [0.005, 0.01, 0.02, 0.03]
 # light_masses = [0.005, ]

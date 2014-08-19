@@ -4,13 +4,13 @@ from pyon.lib.fitting.common import Fitter, ErrorGenerator, \
     ChiSqFitObjectGenerator
 from pyon.lib.resampling import Jackknife
 from pyon.lib.structs.errors import OneErrorGeneratorBase
-import numpy as np
 
 from delmsq.lib.fitting.minuit import MinuitFitMethod
 
 
 def fit_chi2_minuit_delmsq(jackknife_data, x_range=None, fit_func=None,
                            initial_value=None, errs=None, fit_func_params=None,
+                           avg_fit_func_params=None,
                            central_data=None):
 
     resampler = Jackknife(n=1)  # TODO: Maybe change this to a dummy resampler
@@ -20,9 +20,29 @@ def fit_chi2_minuit_delmsq(jackknife_data, x_range=None, fit_func=None,
 
     fitter = DelMSqFitter(jackknife_data, x_range, fit_func, initial_value, None,
                           resampler, error_generator, fit_object_generator,
-                          MinuitFitMethod(fit_func), fit_func_params,
+                          MinuitFitMethod(fit_func), fit_func_params, avg_fit_func_params,
                           central_data)
     return fitter
+
+
+# def fit_chi2_minuit_light_masses(targets, fit_func, initial_values,
+#                                  fit_func_params, avg_fit_func_params):
+#     resampler = Jackknife(n=1)
+#     fit_object_generator = LightMassesFitObjectGenerator()
+#     fitter = LightMassesFitter()
+#     return fitter
+#
+#
+# class LightMassesFitObjectGenerator(FitObjectGeneratorBase):
+#     def generate(self, data, errors, fit_func, x_range):
+#         return Chi2LightMasses(data, errors, x_range, fit_func)
+#
+#
+# class Chi2LightMasses(GenericChi2):
+#     def __call__(self, *args, **kwargs):
+#         # Gets called with (mu, md, ms)
+#         ff = self.fit_func(self.x_range, *args, **kwargs)
+#         return sum(((self.data - ff) / self.errors)**2)
 
 
 class FrozenOneErrorGenerator(OneErrorGeneratorBase):
@@ -33,13 +53,12 @@ class FrozenOneErrorGenerator(OneErrorGeneratorBase):
         return self._err
 
 
-# class DelMSqChi2(GenericChi2):
-#     """
-#     Remove x_range scaling
-#     """
-#     def __call__(self, *args):
-#         ff = self.fit_func(self.x_range, *args)
-#         return sum(((self.data - ff) / self.errors)**2)
+# class LightMassesFitter(FitterBase):
+#     def __init__(self):
+#         pass
+#
+#     def fit(self):
+#         pass
 
 
 class DelMSqFitter(Fitter):
@@ -52,8 +71,9 @@ class DelMSqFitter(Fitter):
 
     def __init__(self, data, x_range, fit_func, initial_value, bounds,
                  resampler, error_generator, fit_object_generator, fit_method,
-                 fit_func_params, central_data):
+                 fit_func_params, avg_fit_func_params, central_data):
         self._fit_func_params = fit_func_params
+        self._avg_fit_func_params = avg_fit_func_params
         self._central_data = central_data
         super().__init__(data, x_range, fit_func, initial_value, bounds,
                          resampler, error_generator, fit_object_generator,
@@ -62,11 +82,11 @@ class DelMSqFitter(Fitter):
     def _prepare_fit_funcs(self):
         self._fit_funcs = [partial(self._fit_func_base, **kwargs)
                            for kwargs in self._fit_func_params]
-        avg_fit_func_params = {k: np.average([sample[k] for sample
-                                              in self._fit_func_params])
-                               for k in self._fit_func_params[0].keys()}
+        # avg_fit_func_params = {k: np.average([sample[k] for sample
+        #                                       in self._fit_func_params])
+        #                        for k in self._fit_func_params[0].keys()}
         self._central_fit_func = partial(self._fit_func_base,
-                                         **avg_fit_func_params)
+                                         **self._avg_fit_func_params)
 
     def _prepare_data(self):
         pass  # Don't need to do x_range in this case
