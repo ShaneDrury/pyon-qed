@@ -9,7 +9,7 @@ from meas24c.models import ChargedMeson24c
 from meas24c.views import get_charged_mesons, get_uncharged_mesons
 from meas24c.plots import delmsq_plots, mass_plots_chg, mass_plots_unchg
 
-bnds = ((0., 1.), (0, None))
+bnds = {'m': (0., 1.), 'c': (0, None)}
 light_masses = [0.005, 0.01, 0.02, 0.03]
 # light_masses = [0.005, ]
 
@@ -52,10 +52,12 @@ for m_l in light_masses:
     uncharged_views[m_l] = uncharged
     charged_views[m_l] = charged
 
-corr_meas_unch = {m_l: partial(create_hadrons, uncharged_views[m_l], **create_hadrons_params[m_l])
+corr_meas_unch = {m_l: partial(create_hadrons, uncharged_views[m_l],
+                               **create_hadrons_params[m_l])
                   for m_l in light_masses}
 
-corr_meas_ch = {m_l: partial(create_hadrons, charged_views[m_l], **create_hadrons_params[m_l])
+corr_meas_ch = {m_l: partial(create_hadrons, charged_views[m_l],
+                             **create_hadrons_params[m_l])
                 for m_l in light_masses}
 
 uncovariant_mass = {m_l: partial(fit_masses,

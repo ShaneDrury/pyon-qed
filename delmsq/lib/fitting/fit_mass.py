@@ -9,7 +9,7 @@ from delmsq.lib.fitting.minuit import MinuitFitMethod
 log = logging.getLogger(__name__)
 
 
-def create_hadrons(data, bin_size):
+def create_hadrons(data: 'callable', bin_size: int):
     dat = data()
     hadrons = {}
     for k, v in dat.items():
@@ -31,8 +31,8 @@ def create_hadrons(data, bin_size):
     return hadrons
 
 
-def fit_masses(hadrons,
-               hadron_kwargs):
+def fit_masses(hadrons: 'callable',
+               hadron_kwargs: dict):
     all_fit_params = {}
     already_fit = {}
     had = hadrons()

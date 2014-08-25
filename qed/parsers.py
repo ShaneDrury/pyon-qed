@@ -8,12 +8,16 @@ parsers = [
         'parser': 'meas24c.parsers',
         'enabled': False,
     },
+
     {
         'name': 'SU3 Pion LECs',
         'parser': 'su3.parsers',
+        'enabled': False,
     },
-    # {
-    #     'name': 'Kaon LECs',
-    #     'parser': 'kaon.parsers',
-    # }
+
+    {
+        'name': 'SU2 Pion LECs',
+        'parser': 'su2.parsers',
+        'enabled': False,
+    },
 ]
