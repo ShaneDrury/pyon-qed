@@ -34,7 +34,7 @@ class MinuitFitMethod(FitMethodBase):
             m.migrad()
             for k, v in m.values.items():
                 fit_params[k].append(v)
-            c2 = m.fval / fit_obj.dof
+            c2 = m.fval / fit_obj.dof()
             # http://arxiv.org/pdf/1012.3754v1.pdf says it's N-P, not N-P+1
             fit_params['chi_sq_dof'].append(c2)
         return fit_params

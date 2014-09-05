@@ -8,3 +8,22 @@ def equivalent_params(m1, m2, q1, q2):
     """
     return [[m1, m2, q1, q2], [m1, m2, -q1, -q2], [m2, m1, q2, q1],
             [m2, m1, -q2, -q1]]
+
+
+# def equivalent_params_m_l(m1, m2, q1, q2, m_l):
+#     return [(m1, m2, q1, q2, m_l),
+#             (m1, m2, -q1, -q2, m_l),
+#             (m2, m1, q2, q1, m_l),
+#             (m2, m1, -q2, -q1, m_l)]
+#
+#
+# class SymmetricDict(dict):
+#     def __getitem__(self, key):
+#         for k in equivalent_params_m_l(*key):
+#             print(k)
+#             try:
+#                 r = super().__getitem__(k)
+#                 return r
+#             except KeyError:
+#                 pass
+#         raise KeyError(key)

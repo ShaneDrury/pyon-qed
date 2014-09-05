@@ -43,9 +43,10 @@ class KaonLECParser(Parser):
             dic = {
                 'config_number': config_number,
                 'M2': float(m.group('M2')),
-                'A3': float(m.group('A3')),
-                'A4': float(m.group('A4')),
+                'A_3': float(m.group('A3')),
+                'A_4': float(m.group('A4')),
             }
+            log.debug(dic)
         else:
             raise re.error("Cannot match file")
         return dic

@@ -7,6 +7,7 @@ from subprocess import Popen, PIPE
 from pyon.core.cache import cache_data
 
 from meas24c.measurements import covariant_delmsq_meas
+from su2.lib.kaon import filter_kaon_del_m_sq
 from su2.models import PionLECSU2
 from su3.lib.statistics import pad
 from su3.views import filter_del_m_sq
@@ -71,6 +72,41 @@ def get_fv_corrections():
         m_4 = round(m_4, ndigits=9)
         log.debug("{}".format((m_1, m_3, m_4, q_1, q_3)))
         fvc[x_block] = [get_fvc(q_1, q_3, 0., 0., 0., m_1, m_3, m_4, m_4, m_s,
+                                b0, mres, length)
+                        for b0, mres in zip(jk_b0, jk_m_res)]
+    return fvc
+
+
+@cache_data('24c_fv_kaon_su2_002')
+def get_fv_corrections_kaon_002():
+    return get_fv_corrections_kaon(0.02)
+
+@cache_data('24c_fv_kaon_su2_003')
+def get_fv_corrections_kaon_003():
+    return get_fv_corrections_kaon(0.03)
+
+
+def get_fv_corrections_kaon(m_3):
+    length = 24
+    m_s = 0.04
+    jk_b0, jk_m_res = get_pion_lec_su2_fv()
+    num_lec = 190
+    light_delmsq = {k: covariant_delmsq_meas[k] for k in (0.005, 0.01, 0.02,
+                                                          0.03)}
+    filtered_del_m_sq = filter_kaon_del_m_sq(light_delmsq, m_3)
+    padded = pad(filtered_del_m_sq, num_lec)
+    fvc = {}
+    for x_block in padded.keys():
+        m_1, m_3, q_1, q_3, m_4 = x_block
+        if m_3 < m_1:
+            m_1, m_3 = m_3, m_1
+            q_1, q_3 = q_3, q_1
+        new_key = m_1, m_3, q_1, q_3, m_4
+        m_1 = round(m_1, ndigits=9)
+        m_3 = round(m_3, ndigits=9)
+        m_4 = round(m_4, ndigits=9)
+        log.debug("{}".format((m_1, m_3, m_4, q_1, q_3)))
+        fvc[new_key] = [get_fvc(q_1, q_3, 0., 0., 0., m_1, m_3, m_4, m_4, m_s,
                                 b0, mres, length)
                         for b0, mres in zip(jk_b0, jk_m_res)]
     return fvc

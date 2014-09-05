@@ -16,8 +16,8 @@ parsers = [
     },
 
     {
-        'name': 'SU2 Pion LECs',
+        'name': 'SU2 Pion and kaon LECs',
         'parser': 'su2.parsers',
-        'enabled': False,
+        'enabled': True,
     },
 ]
